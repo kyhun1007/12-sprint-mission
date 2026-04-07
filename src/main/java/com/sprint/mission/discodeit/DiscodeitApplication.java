@@ -43,7 +43,7 @@ public class DiscodeitApplication {
 		
 		try {
 			if (Files.exists(dataMapPath)) {
-				// file-data-map 하위의 모든 파일과 디렉토리를 삭제
+				// file-data-map 하위의 모든 파일과 삭제
 				Files.walk(dataMapPath)
 					.sorted((a, b) -> b.compareTo(a)) // 역순 정렬 (하위부터 삭제)
 					.forEach(path -> {
