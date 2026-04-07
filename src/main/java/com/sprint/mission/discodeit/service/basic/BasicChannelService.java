@@ -4,17 +4,22 @@ import com.sprint.mission.discodeit.entity.Channel;
 import com.sprint.mission.discodeit.entity.ChannelType;
 import com.sprint.mission.discodeit.repository.ChannelRepository;
 import com.sprint.mission.discodeit.service.ChannelService;
+import lombok.AllArgsConstructor;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.UUID;
 
+@Service("basicChannelService")
+@AllArgsConstructor
 public class BasicChannelService implements ChannelService {
     private final ChannelRepository channelRepository;
 
-    public BasicChannelService(ChannelRepository channelRepository) {
-        this.channelRepository = channelRepository;
-    }
+//    public BasicChannelService(@Qualifier("fileChannelRepository") ChannelRepository channelRepository) {
+//        this.channelRepository = channelRepository;
+//    }
 
     @Override
     public Channel create(ChannelType type, String name, String description) {
