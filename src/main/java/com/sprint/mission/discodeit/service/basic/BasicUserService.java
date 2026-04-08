@@ -6,6 +6,7 @@ import com.sprint.mission.discodeit.entity.User;
 import com.sprint.mission.discodeit.entity.UserStatus;
 import com.sprint.mission.discodeit.repository.BinaryContentRepository;
 import com.sprint.mission.discodeit.repository.UserRepository;
+import com.sprint.mission.discodeit.repository.UserStatusRepository;
 import com.sprint.mission.discodeit.service.UserService;
 import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
@@ -20,6 +21,8 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class BasicUserService implements UserService {
     private final UserRepository userRepository;
+    private final BinaryContentRepository binaryContentRepository;
+    private final UserStatusRepository userStatusRepository;
 
 //    public BasicUserService(@Qualifier("fileUserRepository") UserRepository userRepository) {
 //        this.userRepository = userRepository;
@@ -58,30 +61,24 @@ public class BasicUserService implements UserService {
         userRepository.deleteById(userId);
     }
 
-    public UserDto create(UserCreateRequest userCreateRequest) {
-        User user = userCreateRequest.toUser();
+    public User create(UserCreateRequest userCreateRequest) {
         List<User> existingUsers = userRepository.findAll();
 
         for (User existingUser : existingUsers) {
-            if (existingUser.getUsername().equals(user.getUsername())) {
-                throw new IllegalArgumentException("User with Username " + user.getUsername() + " already exists");
+            if (existingUser.getUsername().equals(userCreateRequest.username())) {
+                throw new IllegalArgumentException("User with Username " + userCreateRequest.username() + " already exists");
             }
 
-            if (existingUser.getEmail().equals(user.getEmail())) {
-                throw new IllegalArgumentException("User with Email " + user.getEmail() + " already exists");
+            if (existingUser.getEmail().equals(userCreateRequest.email())) {
+                throw new IllegalArgumentException("User with Email " + userCreateRequest.email() + " already exists");
             }
         }
 
-//        레포지 구성하고 완성할 때 추가할예정
-//        UUID profileId = userCreateRequest.profileImageId();
-//
-//        if (profileId != null && BinaryContentRepository.isExists(profileId)) {
-//
-//        }
+        User user = userCreateRequest.toUser();
 
         UserStatus status = new UserStatus(user.getId());
-//        userStatusRepository.save(status); // UserStatus 저장 -> UserStatusRepository 구현 후 추가할 예정
+        userStatusRepository.save(status);
 
-        return UserDto.from(userRepository.save(user));
+        return user;
     }
 }

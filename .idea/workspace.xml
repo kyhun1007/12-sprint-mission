@@ -5,34 +5,9 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="68a09c92-f8a9-4118-a917-5d4dfcb59dd6" name="변경" comment="docs: 테스트 시나리오별 주석 추가 및 테스트 코드 미세 조정">
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/sprint/mission/discodeit/dto/UserCreateRequest.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/sprint/mission/discodeit/dto/UserUpdateRequest.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/sprint/mission/discodeit/dto/data/UserDto.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/sprint/mission/discodeit/repository/jcf/JCFBinaryContentRepository.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/sprint/mission/discodeit/repository/jcf/JCFReadStatusRepository.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/sprint/mission/discodeit/repository/jcf/JCFUserStatusRepository.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/file-data-map/Channel/c6c72fa7-36c7-45d9-8361-eb2c029ef194.ser" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/file-data-map/Message/395a774c-a2c9-42b1-98eb-db28fc351626.ser" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/file-data-map/Message/3a4f8b2c-e32d-43a4-9cc2-40237c715f6b.ser" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/file-data-map/Message/6e8e2f16-bec8-4051-8cc5-292c991ce0fb.ser" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/file-data-map/Message/71d4c4ea-5f76-4ec7-a3da-a6d8731b86e9.ser" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/file-data-map/Message/8ce48fcf-e47e-4d63-80a6-b66a8b396984.ser" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/file-data-map/Message/c430dd66-1a49-4ebe-b922-197e3b1036bf.ser" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/file-data-map/Message/c4c2c0cb-d644-4ae8-9303-a8686a8e4b32.ser" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/file-data-map/Message/eeb5c9c2-ae34-4b12-a655-3f034a2ecb97.ser" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/file-data-map/Message/f2f78460-74ca-49c4-9063-236f2cdb89d8.ser" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/file-data-map/User/47b09812-21a8-4c36-992a-53faffcce63e.ser" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/file-data-map/User/82d5ceb0-7209-4dea-ab1a-effca5df148d.ser" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/file-data-map/User/dc1f075c-dca5-44fa-a385-5d4738786905.ser" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/sprint/mission/discodeit/entity/BinaryContent.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/sprint/mission/discodeit/entity/BinaryContent.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/sprint/mission/discodeit/entity/ReadStatus.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/sprint/mission/discodeit/entity/ReadStatus.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/sprint/mission/discodeit/entity/User.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/sprint/mission/discodeit/entity/User.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/sprint/mission/discodeit/entity/UserStatus.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/sprint/mission/discodeit/entity/UserStatus.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/sprint/mission/discodeit/repository/BinaryContentRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/sprint/mission/discodeit/repository/BinaryContentRepository.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/sprint/mission/discodeit/repository/ReadStatusRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/sprint/mission/discodeit/repository/ReadStatusRepository.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/sprint/mission/discodeit/repository/UserStatusRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/sprint/mission/discodeit/repository/UserStatusRepository.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/sprint/mission/discodeit/dto/data/UserDto.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/sprint/mission/discodeit/dto/data/UserDto.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/sprint/mission/discodeit/service/basic/BasicUserService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/sprint/mission/discodeit/service/basic/BasicUserService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/application.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/application.yaml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -152,7 +127,7 @@
       <option name="presentableId" value="Default" />
       <updated>1775539425376</updated>
       <workItem from="1775539426409" duration="4538000" />
-      <workItem from="1775543991364" duration="15860000" />
+      <workItem from="1775543991364" duration="19022000" />
     </task>
     <servers />
   </component>
