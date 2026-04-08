@@ -18,16 +18,29 @@ public class User implements Serializable {
     private String email;
     private String password;
 
-    public User(String username, String email, String password) {
+    private UUID profileImageId;
+
+    public User(String username, String email, String password, UUID profileImageId) {
         this.id = UUID.randomUUID();
         this.createdAt = Instant.now();
         //
         this.username = username;
         this.email = email;
         this.password = password;
+        this.profileImageId = profileImageId;
     }
 
+    // 호환성 위해 남겨둠
+    public User(String username, String email, String password) {
+        this(username ,email, password, null);
+    }
+
+    // 22
     public void update(String newUsername, String newEmail, String newPassword) {
+        update(newUsername, newEmail, newPassword, null);
+    }
+
+    public void update(String newUsername, String newEmail, String newPassword, UUID profileImageId) {
         boolean anyValueUpdated = false;
         if (newUsername != null && !newUsername.equals(this.username)) {
             this.username = newUsername;
@@ -39,6 +52,11 @@ public class User implements Serializable {
         }
         if (newPassword != null && !newPassword.equals(this.password)) {
             this.password = newPassword;
+            anyValueUpdated = true;
+        }
+
+        if (profileImageId != null && !profileImageId.equals(this.profileImageId)) {
+            this.profileImageId = profileImageId;
             anyValueUpdated = true;
         }
 

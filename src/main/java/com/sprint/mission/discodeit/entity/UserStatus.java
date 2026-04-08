@@ -2,18 +2,30 @@ package com.sprint.mission.discodeit.entity;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.RequiredArgsConstructor;
 
+import java.io.Serializable;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.UUID;
 
 @Getter
-public class UserStatus {
+@NoArgsConstructor
+public class UserStatus implements Serializable {
+    private static final long serialVersionUID = 1L;
+
     private UUID id;
     private UUID userId;
 
     private Instant createdAt;
     private Instant updatedAt;
+
+    public UserStatus(UUID userId) {
+        this.userId = userId;
+
+        this.id = UUID.randomUUID();
+        this.createdAt = Instant.now();
+    }
 
     public boolean isUserOnline() {
         if (this.updatedAt == null) {

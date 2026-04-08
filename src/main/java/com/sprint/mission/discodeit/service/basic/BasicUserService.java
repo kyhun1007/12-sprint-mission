@@ -1,6 +1,10 @@
 package com.sprint.mission.discodeit.service.basic;
 
+import com.sprint.mission.discodeit.dto.UserCreateRequest;
+import com.sprint.mission.discodeit.dto.data.UserDto;
 import com.sprint.mission.discodeit.entity.User;
+import com.sprint.mission.discodeit.entity.UserStatus;
+import com.sprint.mission.discodeit.repository.BinaryContentRepository;
 import com.sprint.mission.discodeit.repository.UserRepository;
 import com.sprint.mission.discodeit.service.UserService;
 import lombok.AllArgsConstructor;
@@ -52,5 +56,32 @@ public class BasicUserService implements UserService {
             throw new NoSuchElementException("User with id " + userId + " not found");
         }
         userRepository.deleteById(userId);
+    }
+
+    public UserDto create(UserCreateRequest userCreateRequest) {
+        User user = userCreateRequest.toUser();
+        List<User> existingUsers = userRepository.findAll();
+
+        for (User existingUser : existingUsers) {
+            if (existingUser.getUsername().equals(user.getUsername())) {
+                throw new IllegalArgumentException("User with Username " + user.getUsername() + " already exists");
+            }
+
+            if (existingUser.getEmail().equals(user.getEmail())) {
+                throw new IllegalArgumentException("User with Email " + user.getEmail() + " already exists");
+            }
+        }
+
+//        레포지 구성하고 완성할 때 추가할예정
+//        UUID profileId = userCreateRequest.profileImageId();
+//
+//        if (profileId != null && BinaryContentRepository.isExists(profileId)) {
+//
+//        }
+
+        UserStatus status = new UserStatus(user.getId());
+//        userStatusRepository.save(status); // UserStatus 저장 -> UserStatusRepository 구현 후 추가할 예정
+
+        return UserDto.from(userRepository.save(user));
     }
 }

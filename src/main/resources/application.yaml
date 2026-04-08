@@ -4,5 +4,5 @@ spring:
 
 discodeit:
   repository:
-    type: file # file | jcf
+    type: jcf # file | jcf
     file.directory: ./discodeit
