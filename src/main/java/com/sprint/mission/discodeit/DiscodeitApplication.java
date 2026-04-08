@@ -1,23 +1,18 @@
 package com.sprint.mission.discodeit;
 
-import com.sprint.mission.discodeit.dto.UserCreateRequest;
+import com.sprint.mission.discodeit.dto.user.UserCreateRequest;
+import com.sprint.mission.discodeit.dto.user.UserDto;
+import com.sprint.mission.discodeit.dto.user.UserUpdateRequest;
 import com.sprint.mission.discodeit.entity.Channel;
 import com.sprint.mission.discodeit.entity.ChannelType;
 import com.sprint.mission.discodeit.entity.Message;
 import com.sprint.mission.discodeit.entity.User;
-import com.sprint.mission.discodeit.repository.file.FileChannelRepository;
-import com.sprint.mission.discodeit.repository.file.FileMessageRepository;
-import com.sprint.mission.discodeit.repository.file.FileUserRepository;
 import com.sprint.mission.discodeit.service.ChannelService;
 import com.sprint.mission.discodeit.service.MessageService;
 import com.sprint.mission.discodeit.service.UserService;
-import com.sprint.mission.discodeit.service.basic.BasicChannelService;
-import com.sprint.mission.discodeit.service.basic.BasicMessageService;
-import com.sprint.mission.discodeit.service.basic.BasicUserService;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.ConfigurableApplicationContext;
-import org.springframework.context.annotation.Bean;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -68,10 +63,9 @@ public class DiscodeitApplication {
 		try {
 			System.out.println("========== [1. 데이터 일괄 생성] ==========");
 			// User 엔티티에 nickname이 없으므로 username, email, password만 사용
-			User u1 = userService.create("lee", "lee@test.com", "1234");
-			User u2 = userService.create("song", "song@test.com", "2345");
-			UserCreateRequest request = new UserCreateRequest("kim", "kim@test.com", "3456", null);
-			User u3 = userService.create(request);
+			User u1 = userService.create(new UserCreateRequest("lee", "lee@test.com", "1234", null));
+			User u2 = userService.create(new UserCreateRequest("song", "song@test.com", "2345", null));
+			User u3 = userService.create(new UserCreateRequest("kim", "kim@test.com", "3456", null));
 
 			// Channel 생성 (ChannelType 포함)
 			Channel c1 = channelService.create(ChannelType.PUBLIC, "자바기초", "자바 기본 문법 공부방");
@@ -94,27 +88,34 @@ public class DiscodeitApplication {
 
 			System.out.println("전체 메시지 등록 완료: " + messageService.findAll().size() + "개\n");
 
+//			System.out.println("u1 : " + u1.getId());
+//			System.out.println("u2 : " + u2.getId());
+//			System.out.println("u3 : " + u3.getId());
+//			System.out.println("c1 : " + c1.getId());
+//			System.out.println("c2 : " + c2.getId());
+
+
 			System.out.println("========== [2-1. 특정 메시지 조회] ==========");
 			// Optional 처리 및 닉네임 대신 Username 사용
 			String channelName = channelService.find(m1.getChannelId()).getName();
-			String userName = userService.find(m1.getAuthorId()).getUsername();
+			String userName = userService.find(m1.getAuthorId()).username();
 
 			System.out.println("채널 : " + channelName + " | 작성자 : " + userName);
 			System.out.println("내용 : " + m1.getContent());
 			System.out.println("----------------------------------------------------");
 
 			System.out.println("\n========== [2-2. 유저 전체 조회] ==========");
-			for (User u : userService.findAll()) {
-				System.out.println("ID : " + u.getId() + " | 이름 : " + u.getUsername() + " | 이메일 : " + u.getEmail());
+			for (UserDto u : userService.findAll()) {
+				System.out.println("ID : " + u.id() + " | 이름 : " + u.username() + " | 이메일 : " + u.email());
 			}
 
 			System.out.println("\n========== [3. 수정 및 재조회 검증] ==========");
 			System.out.println("유저2 수정 전 이름: " + u2.getUsername());
 			// BasicUserService.update(id, username, email, password)
-			userService.update(u2.getId(), "민형마스터", null, null);
+			userService.update(new UserUpdateRequest(u2.getId(), "민형마스터", null, null, null));
 
-			User updatedU2 = userService.find(u2.getId());
-			System.out.println("수정 후 이름: " + updatedU2.getUsername());
+			UserDto updatedU2 = userService.find(u2.getId());
+			System.out.println("수정 후 이름: " + updatedU2.username());
 
 			// 메시지 수정 (content만 수정)
 			messageService.update(m1.getId(), "전 풀스택 할래요!");
