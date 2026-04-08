@@ -1,5 +1,6 @@
 package com.sprint.mission.discodeit;
 
+import com.sprint.mission.discodeit.dto.UserCreateRequest;
 import com.sprint.mission.discodeit.entity.Channel;
 import com.sprint.mission.discodeit.entity.ChannelType;
 import com.sprint.mission.discodeit.entity.Message;
@@ -69,7 +70,8 @@ public class DiscodeitApplication {
 			// User 엔티티에 nickname이 없으므로 username, email, password만 사용
 			User u1 = userService.create("lee", "lee@test.com", "1234");
 			User u2 = userService.create("song", "song@test.com", "2345");
-			User u3 = userService.create("kim", "kim@test.com", "3456");
+			UserCreateRequest request = new UserCreateRequest("kim", "kim@test.com", "3456", null);
+			User u3 = userService.create(request);
 
 			// Channel 생성 (ChannelType 포함)
 			Channel c1 = channelService.create(ChannelType.PUBLIC, "자바기초", "자바 기본 문법 공부방");

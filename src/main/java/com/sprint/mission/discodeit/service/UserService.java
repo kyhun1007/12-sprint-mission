@@ -1,5 +1,6 @@
 package com.sprint.mission.discodeit.service;
 
+import com.sprint.mission.discodeit.dto.UserCreateRequest;
 import com.sprint.mission.discodeit.entity.User;
 
 import java.util.List;
@@ -11,4 +12,6 @@ public interface UserService {
     List<User> findAll();
     User update(UUID userId, String newUsername, String newEmail, String newPassword);
     void delete(UUID userId);
+    // 이거로 전부 수정 예정
+    User create(UserCreateRequest request);
 }

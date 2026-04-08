@@ -6,7 +6,8 @@
   <component name="ChangeListManager">
     <list default="true" id="68a09c92-f8a9-4118-a917-5d4dfcb59dd6" name="변경" comment="docs: 테스트 시나리오별 주석 추가 및 테스트 코드 미세 조정">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/sprint/mission/discodeit/dto/data/UserDto.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/sprint/mission/discodeit/dto/data/UserDto.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/sprint/mission/discodeit/DiscodeitApplication.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/sprint/mission/discodeit/DiscodeitApplication.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/sprint/mission/discodeit/service/UserService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/sprint/mission/discodeit/service/UserService.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/sprint/mission/discodeit/service/basic/BasicUserService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/sprint/mission/discodeit/service/basic/BasicUserService.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -127,7 +128,7 @@
       <option name="presentableId" value="Default" />
       <updated>1775539425376</updated>
       <workItem from="1775539426409" duration="4538000" />
-      <workItem from="1775543991364" duration="19022000" />
+      <workItem from="1775543991364" duration="20032000" />
     </task>
     <servers />
   </component>
