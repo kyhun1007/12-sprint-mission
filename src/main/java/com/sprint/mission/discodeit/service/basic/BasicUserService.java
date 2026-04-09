@@ -25,16 +25,6 @@ public class BasicUserService implements UserService {
     private final BinaryContentRepository binaryContentRepository;
     private final UserStatusRepository userStatusRepository;
 
-//    public BasicUserService(@Qualifier("fileUserRepository") UserRepository userRepository) {
-//        this.userRepository = userRepository;
-//    }
-
-//    @Override
-//    public User create(String username, String email, String password) {
-//        User user = new User(username, email, password);
-//        return userRepository.save(user);
-//    }
-
     public User create(UserCreateRequest request) {
         List<User> existingUsers = userRepository.findAll();
 

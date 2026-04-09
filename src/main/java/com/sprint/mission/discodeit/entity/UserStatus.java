@@ -21,17 +21,18 @@ public class UserStatus implements Serializable {
     private Instant updatedAt;
 
     public UserStatus(UUID userId) {
+        this.id = UUID.randomUUID();
         this.userId = userId;
 
-        this.id = UUID.randomUUID();
         this.createdAt = Instant.now();
+        this.updatedAt = Instant.now();
+    }
+
+    public void updateTimestamp() {
+        this.updatedAt = Instant.now();
     }
 
     public boolean isUserOnline() {
-        if (this.updatedAt == null) {
-            return false;
-        }
-
         Instant threshold = Instant.now().minus(5, ChronoUnit.MINUTES);
         return updatedAt.isAfter(threshold);
     }

@@ -141,7 +141,7 @@ public class DiscodeitApplication {
 
 			System.out.println("\n========= 모든 테스트 시나리오 종료 =========");
 		} catch (Exception e) {
-			throw new RuntimeException(e);
+			e.printStackTrace();
 		}
 	}
 }

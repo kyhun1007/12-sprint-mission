@@ -30,7 +30,7 @@ public class User implements Serializable {
         this.profileImageId = profileImageId;
     }
 
-    // 호환성 위해 남겨둠
+    // 호환성 위해 남겨둠 삭제해도될듯
     public User(String username, String email, String password) {
         this(username ,email, password, null);
     }
