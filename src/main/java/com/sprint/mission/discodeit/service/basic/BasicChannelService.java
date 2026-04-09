@@ -30,10 +30,6 @@ public class BasicChannelService implements ChannelService {
     private final MessageRepository messageRepository;
     private final UserRepository userRepository;
 
-//    public BasicChannelService(@Qualifier("fileChannelRepository") ChannelRepository channelRepository) {
-//        this.channelRepository = channelRepository;
-//    }
-
     @Override
     public Channel createPublicChannel(PublicChannelCreateRequest request) {
         Channel channel = new Channel(ChannelType.PUBLIC, request.name(), request.description());

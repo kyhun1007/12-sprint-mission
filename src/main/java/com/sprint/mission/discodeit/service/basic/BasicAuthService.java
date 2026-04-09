@@ -4,15 +4,13 @@ import com.sprint.mission.discodeit.dto.AuthRequest;
 import com.sprint.mission.discodeit.entity.User;
 import com.sprint.mission.discodeit.repository.UserRepository;
 import com.sprint.mission.discodeit.service.AuthService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 @Service("basicAuthService")
+@RequiredArgsConstructor
 public class BasicAuthService implements AuthService {
     private final UserRepository userRepository;
-
-    public BasicAuthService(UserRepository userRepository) {
-        this.userRepository = userRepository;
-    }
 
     public User login(AuthRequest authRequest) {
         if (authRequest.username() == null  || authRequest.password() == null) {

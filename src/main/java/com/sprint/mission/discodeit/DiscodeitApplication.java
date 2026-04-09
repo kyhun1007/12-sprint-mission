@@ -1,6 +1,9 @@
 package com.sprint.mission.discodeit;
 
 import com.sprint.mission.discodeit.dto.channel.PublicChannelCreateRequest;
+import com.sprint.mission.discodeit.dto.message.MessageCreateRequest;
+import com.sprint.mission.discodeit.dto.message.MessageResponse;
+import com.sprint.mission.discodeit.dto.message.MessageUpdateRequest;
 import com.sprint.mission.discodeit.dto.user.UserCreateRequest;
 import com.sprint.mission.discodeit.dto.user.UserResponse;
 import com.sprint.mission.discodeit.dto.user.UserUpdateRequest;
@@ -74,19 +77,22 @@ public class DiscodeitApplication {
 			System.out.println("유저/채널 생성 완료 (유저: " + userService.findAll().size() + ", 채널: " + channelService.findAllByUserId(u1.getId()).size() + ")");
 
 			// Message 생성 (인자 순서: content, channelId, authorId)
-			messageService.create("안녕하세요, 자바 공부 시작합니다!", c1.getId(), u1.getId());
-			messageService.create("반가워요 경훈님!", c1.getId(), u2.getId());
-			messageService.create("저도 같이 공부해요.", c1.getId(), u3.getId());
-			messageService.create("제네릭이 너무 어렵네요ㅠㅠ", c1.getId(), u1.getId());
-			messageService.create("그거 스트림이랑 같이 보면 편해요.", c1.getId(), u2.getId());
-			messageService.create("맞아요, 람다도 중요하죠!", c1.getId(), u3.getId());
+// 채널 1 (자바 공부방) 메시지 생성
+			messageService.create(new MessageCreateRequest(c1.getId(), u1.getId(), "안녕하세요, 자바 공부 시작합니다!", null));
+			messageService.create(new MessageCreateRequest(c1.getId(), u2.getId(), "반가워요 경훈님!", null));
+			messageService.create(new MessageCreateRequest(c1.getId(), u3.getId(), "저도 같이 공부해요.", null));
+			messageService.create(new MessageCreateRequest(c1.getId(), u1.getId(), "제네릭이 너무 어렵네요ㅠㅠ", null));
+			messageService.create(new MessageCreateRequest(c1.getId(), u2.getId(), "그거 스트림이랑 같이 보면 편해요.", null));
+			messageService.create(new MessageCreateRequest(c1.getId(), u3.getId(), "맞아요, 람다도 중요하죠!", null));
 
-			messageService.create("프로젝트 주제 정해졌나요?", c2.getId(), u1.getId());
-			messageService.create("채팅 서비스로 하기로 했어요.", c2.getId(), u2.getId());
-			messageService.create("저는 백엔드 맡을게요.", c2.getId(), u3.getId());
-			Message m1 = messageService.create("그럼 전 프론트엔드 할게요!", c2.getId(), u1.getId());
+// 채널 2 (프로젝트 협업방) 메시지 생성
+			messageService.create(new MessageCreateRequest(c2.getId(), u1.getId(), "프로젝트 주제 정해졌나요?", null));
+			messageService.create(new MessageCreateRequest(c2.getId(), u2.getId(), "채팅 서비스로 하기로 했어요.", null));
+			messageService.create(new MessageCreateRequest(c2.getId(), u3.getId(), "저는 백엔드 맡을게요.", null));
+			MessageResponse m1 = messageService.create(new MessageCreateRequest(c2.getId(), u1.getId(), "그럼 전 프론트엔드 할게요!", null));
 
-			System.out.println("전체 메시지 등록 완료: " + messageService.findAll().size() + "개\n");
+			System.out.println("전체 메시지 등록 완료 c1 : " + messageService.findAllByChannelId(c1.getId()).size() + "개");
+			System.out.println("전체 메시지 등록 완료 c2 : " + messageService.findAllByChannelId(c2.getId()).size() + "개\n");
 
 //			System.out.println("u1 : " + u1.getId());
 //			System.out.println("u2 : " + u2.getId());
@@ -97,11 +103,11 @@ public class DiscodeitApplication {
 
 			System.out.println("========== [2-1. 특정 메시지 조회] ==========");
 			// Optional 처리 및 닉네임 대신 Username 사용
-			String channelName = channelService.find(m1.getChannelId()).name();
-			String userName = userService.find(m1.getAuthorId()).username();
+			String channelName = channelService.find(m1.channelId()).name();
+			String userName = userService.find(m1.authorId()).username();
 
 			System.out.println("채널 : " + channelName + " | 작성자 : " + userName);
-			System.out.println("내용 : " + m1.getContent());
+			System.out.println("내용 : " + m1.content());
 			System.out.println("----------------------------------------------------");
 
 			System.out.println("\n========== [2-2. 유저 전체 조회] ==========");
@@ -118,15 +124,15 @@ public class DiscodeitApplication {
 			System.out.println("수정 후 이름: " + updatedU2.username());
 
 			// 메시지 수정 (content만 수정)
-			messageService.update(m1.getId(), "전 풀스택 할래요!");
+			messageService.update(new MessageUpdateRequest(m1.id(), "전 풀스택 할래요!", null));
 			// 엔티티가 새로 반환되거나 Optional로 다시 조회해야 업데이트된 내용 확인 가능
-			Message updatedM1 = messageService.find(m1.getId());
+			Message updatedM1 = messageService.find(m1.id());
 			System.out.println("수정된 메시지 내용: " + updatedM1.getContent());
 
 			System.out.println("\n========== [4. 특정 데이터 삭제 검증] ==========");
-			System.out.println("삭제 전 메시지 수: " + messageService.findAll().size());
-			messageService.delete(m1.getId());
-			System.out.println("삭제 후 메시지 수: " + messageService.findAll().size());
+			System.out.println("삭제 전 메시지 수: " + (messageService.findAllByChannelId(c1.getId()).size()+messageService.findAllByChannelId(c2.getId()).size()));
+			messageService.delete(m1.id());
+			System.out.println("삭제 후 메시지 수: " + (messageService.findAllByChannelId(c1.getId()).size()+messageService.findAllByChannelId(c2.getId()).size()));
 //            System.out.println("삭제 확인 (Present 여부): " + messageService.find(m1.getId()));
 
 			System.out.println("\n========== [5. 채널 삭제] ==========");
