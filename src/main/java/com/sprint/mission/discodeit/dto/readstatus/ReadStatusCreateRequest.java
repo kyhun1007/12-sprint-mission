@@ -1,6 +1,11 @@
 package com.sprint.mission.discodeit.dto.readstatus;
 
-public record ReadStatusCreateRequest(
+import lombok.NonNull;
 
+import java.util.UUID;
+
+public record ReadStatusCreateRequest(
+        @NonNull UUID userId,
+        @NonNull UUID channelId
 ) {
 }

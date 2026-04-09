@@ -25,4 +25,22 @@ public class ReadStatus implements Serializable {
         this.createdAt = Instant.now();
         this.updatedAt = Instant.now();
     }
+
+    public void update(UUID userId, UUID channelId) {
+        boolean anyValueUpdated = false;
+
+        if (userId != null && !userId.equals(this.userId)) {
+            this.userId = userId;
+            anyValueUpdated = true;
+        }
+
+        if (channelId != null && !channelId.equals(this.channelId)) {
+            this.channelId = channelId;
+            anyValueUpdated = true;
+        }
+
+        if (!anyValueUpdated) {
+            this.updatedAt = Instant.now();
+        }
+    }
 }
