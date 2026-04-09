@@ -28,6 +28,13 @@ public class JCFMessageRepository implements MessageRepository {
     }
 
     @Override
+    public Optional<Message> findLatestMessageAtChannel(UUID channelId) {
+        return data.values().stream()
+                .filter(m -> m.getChannelId().equals(channelId))
+                .max(Comparator.comparing(Message::getCreatedAt)); // update?
+    }
+
+    @Override
     public List<Message> findAll() {
         return this.data.values().stream().toList();
     }

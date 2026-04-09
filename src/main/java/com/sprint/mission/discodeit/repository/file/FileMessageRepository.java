@@ -67,6 +67,12 @@ public class FileMessageRepository implements MessageRepository {
         return Optional.ofNullable(messageNullable);
     }
 
+    // 구현예정
+    @Override
+    public Optional<Message> findLatestMessageAtChannel(UUID channelId) {
+        return Optional.empty();
+    }
+
     @Override
     public List<Message> findAll() {
         try {

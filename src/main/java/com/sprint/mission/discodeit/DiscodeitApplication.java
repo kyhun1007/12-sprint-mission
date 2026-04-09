@@ -2,10 +2,9 @@ package com.sprint.mission.discodeit;
 
 import com.sprint.mission.discodeit.dto.channel.PublicChannelCreateRequest;
 import com.sprint.mission.discodeit.dto.user.UserCreateRequest;
-import com.sprint.mission.discodeit.dto.user.UserDto;
+import com.sprint.mission.discodeit.dto.user.UserResponse;
 import com.sprint.mission.discodeit.dto.user.UserUpdateRequest;
 import com.sprint.mission.discodeit.entity.Channel;
-import com.sprint.mission.discodeit.entity.ChannelType;
 import com.sprint.mission.discodeit.entity.Message;
 import com.sprint.mission.discodeit.entity.User;
 import com.sprint.mission.discodeit.service.ChannelService;
@@ -72,7 +71,7 @@ public class DiscodeitApplication {
 			Channel c1 = channelService.createPublicChannel(new PublicChannelCreateRequest("자바기초", "자바 기본 문법 공부방"));
 			Channel c2 = channelService.createPublicChannel(new PublicChannelCreateRequest("프로젝트", "최종 프로젝트 협업 전용"));
 
-			System.out.println("유저/채널 생성 완료 (유저: " + userService.findAll().size() + ", 채널: " + channelService.findAll().size() + ")");
+			System.out.println("유저/채널 생성 완료 (유저: " + userService.findAll().size() + ", 채널: " + channelService.findAllByUserId(u1.getId()).size() + ")");
 
 			// Message 생성 (인자 순서: content, channelId, authorId)
 			messageService.create("안녕하세요, 자바 공부 시작합니다!", c1.getId(), u1.getId());
@@ -98,7 +97,7 @@ public class DiscodeitApplication {
 
 			System.out.println("========== [2-1. 특정 메시지 조회] ==========");
 			// Optional 처리 및 닉네임 대신 Username 사용
-			String channelName = channelService.find(m1.getChannelId()).getName();
+			String channelName = channelService.find(m1.getChannelId()).name();
 			String userName = userService.find(m1.getAuthorId()).username();
 
 			System.out.println("채널 : " + channelName + " | 작성자 : " + userName);
@@ -106,7 +105,7 @@ public class DiscodeitApplication {
 			System.out.println("----------------------------------------------------");
 
 			System.out.println("\n========== [2-2. 유저 전체 조회] ==========");
-			for (UserDto u : userService.findAll()) {
+			for (UserResponse u : userService.findAll()) {
 				System.out.println("ID : " + u.id() + " | 이름 : " + u.username() + " | 이메일 : " + u.email());
 			}
 
@@ -115,7 +114,7 @@ public class DiscodeitApplication {
 			// BasicUserService.update(id, username, email, password)
 			userService.update(new UserUpdateRequest(u2.getId(), "민형마스터", null, null, null));
 
-			UserDto updatedU2 = userService.find(u2.getId());
+			UserResponse updatedU2 = userService.find(u2.getId());
 			System.out.println("수정 후 이름: " + updatedU2.username());
 
 			// 메시지 수정 (content만 수정)
@@ -132,7 +131,7 @@ public class DiscodeitApplication {
 
 			System.out.println("\n========== [5. 채널 삭제] ==========");
 			channelService.delete(c1.getId());
-			System.out.println("남은 채널 수: " + channelService.findAll().size());
+			System.out.println("남은 채널 수: " + channelService.findAllByUserId(u1.getId()).size());
 
 			System.out.println("\n========= 모든 테스트 시나리오 종료 =========");
 		} catch (Exception e) {
