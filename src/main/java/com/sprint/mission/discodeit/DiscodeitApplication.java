@@ -1,5 +1,6 @@
 package com.sprint.mission.discodeit;
 
+import com.sprint.mission.discodeit.dto.channel.PublicChannelCreateRequest;
 import com.sprint.mission.discodeit.dto.user.UserCreateRequest;
 import com.sprint.mission.discodeit.dto.user.UserDto;
 import com.sprint.mission.discodeit.dto.user.UserUpdateRequest;
@@ -68,8 +69,8 @@ public class DiscodeitApplication {
 			User u3 = userService.create(new UserCreateRequest("kim", "kim@test.com", "3456", null));
 
 			// Channel 생성 (ChannelType 포함)
-			Channel c1 = channelService.create(ChannelType.PUBLIC, "자바기초", "자바 기본 문법 공부방");
-			Channel c2 = channelService.create(ChannelType.PUBLIC, "프로젝트", "최종 프로젝트 협업 전용");
+			Channel c1 = channelService.createPublicChannel(new PublicChannelCreateRequest("자바기초", "자바 기본 문법 공부방"));
+			Channel c2 = channelService.createPublicChannel(new PublicChannelCreateRequest("프로젝트", "최종 프로젝트 협업 전용"));
 
 			System.out.println("유저/채널 생성 완료 (유저: " + userService.findAll().size() + ", 채널: " + channelService.findAll().size() + ")");
 

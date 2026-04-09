@@ -103,4 +103,10 @@ public class FileMessageRepository implements MessageRepository {
             throw new RuntimeException(e);
         }
     }
+
+    // 작성필요
+    @Override
+    public void deleteByChannelId(UUID channelId) {
+
+    }
 }
