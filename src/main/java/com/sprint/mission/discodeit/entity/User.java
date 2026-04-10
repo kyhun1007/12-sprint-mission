@@ -31,14 +31,14 @@ public class User implements Serializable {
     }
 
     // 호환성 위해 남겨둠 삭제해도될듯
-    public User(String username, String email, String password) {
-        this(username ,email, password, null);
-    }
+//    public User(String username, String email, String password) {
+//        this(username ,email, password, null);
+//    }
 
     // 22
-    public void update(String newUsername, String newEmail, String newPassword) {
-        update(newUsername, newEmail, newPassword, null);
-    }
+//    public void update(String newUsername, String newEmail, String newPassword) {
+//        update(newUsername, newEmail, newPassword, null);
+//    }
 
     public void update(String newUsername, String newEmail, String newPassword, UUID profileImageId) {
         boolean anyValueUpdated = false;
