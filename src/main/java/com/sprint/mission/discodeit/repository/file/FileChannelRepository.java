@@ -69,8 +69,8 @@ public class FileChannelRepository implements ChannelRepository {
 
     @Override
     public List<Channel> findAll() {
-        try {
-            return Files.list(DIRECTORY)
+        try (var paths = Files.list(DIRECTORY)) {
+            return paths
                     .filter(path -> path.toString().endsWith(EXTENSION))
                     .map(path -> {
                         try (

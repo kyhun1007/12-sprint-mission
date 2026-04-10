@@ -50,3 +50,6 @@ Thumbs.db
 ### Others ###
 *.log
 *.tmp
+
+### Generated files ###
+file-data-map/

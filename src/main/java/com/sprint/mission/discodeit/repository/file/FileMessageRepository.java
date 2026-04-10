@@ -75,8 +75,8 @@ public class FileMessageRepository implements MessageRepository {
 
     @Override
     public List<Message> findAll() {
-        try {
-            return Files.list(DIRECTORY)
+        try (var paths = Files.list(DIRECTORY)) {
+            return paths
                     .filter(path -> path.toString().endsWith(EXTENSION))
                     .map(path -> {
                         try (

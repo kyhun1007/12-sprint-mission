@@ -78,8 +78,8 @@ public class FileReadStatusRepository implements ReadStatusRepository {
 
     @Override
     public List<ReadStatus> findAll() {
-        try {
-            return Files.list(DIRECTORY)
+        try (var paths = Files.list(DIRECTORY)) {
+            return paths
                     .filter(path -> path.toString().endsWith(EXTENSION))
                     .map(path -> {
                         try (

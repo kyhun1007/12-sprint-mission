@@ -69,8 +69,8 @@ public class FileUserStatusRepository implements UserStatusRepository {
 
     @Override
     public List<UserStatus> findAll() {
-        try {
-            return Files.list(DIRECTORY)
+        try (var paths = Files.list(DIRECTORY)) {
+            return paths
                     .filter(path -> path.toString().endsWith(EXTENSION))
                     .map(path -> {
                         try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream(path.toFile()))) {
