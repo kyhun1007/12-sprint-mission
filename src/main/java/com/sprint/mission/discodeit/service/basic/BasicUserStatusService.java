@@ -35,6 +35,7 @@ public class BasicUserStatusService implements UserStatusService {
     public UserStatus find(UUID id) {
         UserStatus userStatus = userStatusRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("UserStatus with id " + id + " not found (UserStatusService-find)"));
+
         return userStatusRepository.findByUserId(userStatus.getUserId())
                 .orElseThrow(() -> new IllegalArgumentException("UserStatus for user id " + userStatus.getUserId() + " not found (UserStatusService-find)"));
     }

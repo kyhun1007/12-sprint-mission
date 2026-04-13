@@ -2,6 +2,7 @@ package com.sprint.mission.discodeit.repository.file;
 
 import com.sprint.mission.discodeit.entity.User;
 import com.sprint.mission.discodeit.repository.UserRepository;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Repository;
@@ -21,8 +22,8 @@ public class FileUserRepository implements UserRepository {
     private final Path DIRECTORY;
     private final String EXTENSION = ".ser";
 
-    public FileUserRepository() {
-        this.DIRECTORY = Paths.get(System.getProperty("user.dir"), "file-data-map", User.class.getSimpleName());
+    public FileUserRepository(@Value("${discodeit.repository.file-directory:repository}") String FILE_DIR) {
+        this.DIRECTORY = Paths.get(System.getProperty("user.dir"), FILE_DIR, User.class.getSimpleName());
         if (Files.notExists(DIRECTORY)) {
             try {
                 Files.createDirectories(DIRECTORY);

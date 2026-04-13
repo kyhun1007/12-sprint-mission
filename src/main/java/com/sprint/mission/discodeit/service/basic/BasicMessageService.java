@@ -31,6 +31,7 @@ public class BasicMessageService implements MessageService {
         if (!channelRepository.existsById(request.channelId())) {
             throw new NoSuchElementException("Channel not found with id " + request.channelId());
         }
+
         if (!userRepository.existsById(request.authorId())) {
             throw new NoSuchElementException("Author not found with id " + request.authorId());
         }
@@ -93,7 +94,7 @@ public class BasicMessageService implements MessageService {
         }
     }
 
-    public int totalSize() {
+    public int totalMessageNumber() {
         return messageRepository.findAll().size();
     }
 }

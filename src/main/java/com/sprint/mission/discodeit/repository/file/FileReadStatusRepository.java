@@ -4,6 +4,7 @@ import com.sprint.mission.discodeit.entity.BinaryContent;
 import com.sprint.mission.discodeit.entity.Channel;
 import com.sprint.mission.discodeit.entity.ReadStatus;
 import com.sprint.mission.discodeit.repository.ReadStatusRepository;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Repository;
@@ -23,8 +24,8 @@ public class FileReadStatusRepository implements ReadStatusRepository {
     private final Path DIRECTORY;
     private final String EXTENSION = ".ser";
 
-    public FileReadStatusRepository() {
-        this.DIRECTORY = Paths.get(System.getProperty("user.dir"), "file-data-map", ReadStatus.class.getSimpleName());
+    public FileReadStatusRepository(@Value("${discodeit.repository.file-directory:repository}") String FILE_DIR) {
+        this.DIRECTORY = Paths.get(System.getProperty("user.dir"), FILE_DIR, ReadStatus.class.getSimpleName());
         if (Files.notExists(DIRECTORY)) {
             try {
                 Files.createDirectories(DIRECTORY);

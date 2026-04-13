@@ -36,7 +36,6 @@ public class DiscodeitApplication {
 		UserStatusService userStatusService = context.getBean(UserStatusService.class);
 		ReadStatusService readStatusService = context.getBean(ReadStatusService.class);
 
-
 		clearDataFiles();
 
 		runTest(userService, channelService, messageService,
@@ -44,13 +43,13 @@ public class DiscodeitApplication {
 	}
 
 	private static void clearDataFiles() {
-		Path dataMapPath = Paths.get(System.getProperty("user.dir"), "file-data-map");
+		// 삭제는 수동 경로 설정 필요함
+		Path dataMapPath = Paths.get(System.getProperty("user.dir"), ".discodeit");
 		
 		try {
 			if (Files.exists(dataMapPath)) {
-				// file-data-map 하위의 모든 파일을 역순으로 탐색하여 .ser 파일만 삭제
 				Files.walk(dataMapPath)
-					.sorted((a, b) -> b.compareTo(a)) // 역순 정렬 (하위부터 삭제)
+					.sorted((a, b) -> b.compareTo(a))
 					.forEach(path -> {
 						try {
 							if (path.toString().endsWith(".ser") && !Files.isDirectory(path)) {
@@ -79,21 +78,15 @@ public class DiscodeitApplication {
 			BinaryContent b1 = binaryContentService.create(new BinaryContentCreateRequest("kdksadflaflflaslslfafssaasd".getBytes()));
 			BinaryContent b2 = binaryContentService.create(new BinaryContentCreateRequest("kdkasjdkasfaskdasddasdkdkdkdkdasaddasdd".getBytes()));
 
-
-
-			// User 엔티티에 nickname이 없으므로 username, email, password만 사용
 			User u1 = userService.create(new UserCreateRequest("lee", "lee@test.com", "1234", b1.getId()));
 			User u2 = userService.create(new UserCreateRequest("song", "song@test.com", "2345", null));
 			User u3 = userService.create(new UserCreateRequest("kim", "kim@test.com", "3456", null));
 
-			// Channel 생성 (ChannelType 포함)
 			Channel c1 = channelService.createPublicChannel(new PublicChannelCreateRequest("자바기초", "자바 기본 문법 공부방"));
 			Channel c2 = channelService.createPublicChannel(new PublicChannelCreateRequest("프로젝트", "최종 프로젝트 협업 전용"));
 
 			System.out.println("유저/채널 생성 완료 (유저: " + userService.findAll().size() + ", 채널: " + channelService.findAllByUserId(u1.getId()).size() + ")");
 
-			// Message 생성 (인자 순서: content, channelId, authorId)
-// 채널 1 (자바 공부방) 메시지 생성
 			messageService.create(new MessageCreateRequest(c1.getId(), u1.getId(), "안녕하세요, 자바 공부 시작합니다!", List.of(b2.getId())));
 			messageService.create(new MessageCreateRequest(c1.getId(), u2.getId(), "반가워요 경훈님!", null));
 			messageService.create(new MessageCreateRequest(c1.getId(), u3.getId(), "저도 같이 공부해요.", null));
@@ -101,7 +94,6 @@ public class DiscodeitApplication {
 			messageService.create(new MessageCreateRequest(c1.getId(), u2.getId(), "그거 스트림이랑 같이 보면 편해요.", null));
 			messageService.create(new MessageCreateRequest(c1.getId(), u3.getId(), "맞아요, 람다도 중요하죠!", null));
 
-// 채널 2 (프로젝트 협업방) 메시지 생성
 			messageService.create(new MessageCreateRequest(c2.getId(), u1.getId(), "프로젝트 주제 정해졌나요?", null));
 			messageService.create(new MessageCreateRequest(c2.getId(), u2.getId(), "채팅 서비스로 하기로 했어요.", null));
 			messageService.create(new MessageCreateRequest(c2.getId(), u3.getId(), "저는 백엔드 맡을게요.", null));
@@ -110,15 +102,7 @@ public class DiscodeitApplication {
 			System.out.println("전체 메시지 등록 완료 c1 : " + messageService.findAllByChannelId(c1.getId()).size() + "개");
 			System.out.println("전체 메시지 등록 완료 c2 : " + messageService.findAllByChannelId(c2.getId()).size() + "개\n");
 
-//			System.out.println("u1 : " + u1.getId());
-//			System.out.println("u2 : " + u2.getId());
-//			System.out.println("u3 : " + u3.getId());
-//			System.out.println("c1 : " + c1.getId());
-//			System.out.println("c2 : " + c2.getId());
-
-
 			System.out.println("========== [2-1. 특정 메시지 조회] ==========");
-			// Optional 처리 및 닉네임 대신 Username 사용
 			String channelName = channelService.find(m1.channelId()).name();
 			String userName = userService.find(m1.authorId()).username();
 
@@ -134,24 +118,21 @@ public class DiscodeitApplication {
 			System.out.println("\n========== [3. 수정 및 재조회 검증] ==========");
 			System.out.println("유저2 수정 전 이름: " + u2.getUsername());
 			System.out.println("유저2 수정 전 프로필 이미지 ID: " + u2.getProfileImageId());
-			// BasicUserService.update(id, username, email, password)
 			userService.update(new UserUpdateRequest(u2.getId(), "민형마스터", null, null, b2.getId()));
 
 			UserResponse updatedU2 = userService.find(u2.getId());
 			System.out.println("수정 후 이름: " + updatedU2.username());
 			System.out.println("수정 후 프로필 이미지 ID: " + updatedU2.profileImageId());
 
-			// 메시지 수정 (content만 수정)
 			messageService.update(new MessageUpdateRequest(m1.id(), "전 풀스택 할래요!", null));
-			// 엔티티가 새로 반환되거나 Optional로 다시 조회해야 업데이트된 내용 확인 가능
+
 			Message updatedM1 = messageService.find(m1.id());
 			System.out.println("수정된 메시지 내용: " + updatedM1.getContent());
 
 			System.out.println("\n========== [4. 특정 데이터 삭제 검증] ==========");
-			System.out.println("삭제 전 메시지 수: " + (messageService.findAllByChannelId(c1.getId()).size()+messageService.findAllByChannelId(c2.getId()).size()));
+			System.out.println("삭제 전 메시지 수: " + messageService.totalMessageNumber());
 			messageService.delete(m1.id());
-			System.out.println("삭제 후 메시지 수: " + (messageService.findAllByChannelId(c1.getId()).size()+messageService.findAllByChannelId(c2.getId()).size()));
-//            System.out.println("삭제 확인 (Present 여부): " + messageService.find(m1.getId()));
+			System.out.println("삭제 후 메시지 수: " + messageService.totalMessageNumber());
 
 			System.out.println("\n========== [5. 채널 삭제] ==========");
 			channelService.delete(c1.getId());

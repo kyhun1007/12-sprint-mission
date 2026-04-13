@@ -74,18 +74,18 @@ public class BasicUserService implements UserService {
         User user = userRepository.findById(request.id())
                 .orElseThrow(() -> new NoSuchElementException("User with id " + request.id() + " not found (UserService-update)"));
 
-        if (request.profileImageId() != null && !request.profileImageId().equals(user.getProfileImageId())) {
-            if (user.getProfileImageId() != null) {
-                binaryContentRepository.delete(user.getProfileImageId());
-            }
-        }
-
         if (request.email() != null && userRepository.existsByEmail(request.email())) {
             throw new IllegalArgumentException("User with Email " + request.email() + " already exists");
         }
 
         if (request.username() != null && userRepository.existsByUsername(request.username())) {
             throw new IllegalArgumentException("User with Username " + request.username() + " already exists");
+        }
+
+        if (request.profileImageId() != null && !request.profileImageId().equals(user.getProfileImageId())) {
+            if (user.getProfileImageId() != null) {
+                binaryContentRepository.delete(user.getProfileImageId());
+            }
         }
 
         user.update(
