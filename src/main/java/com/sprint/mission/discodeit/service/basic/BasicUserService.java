@@ -26,16 +26,12 @@ public class BasicUserService implements UserService {
     private final UserStatusRepository userStatusRepository;
 
     public User create(UserCreateRequest request) {
-        List<User> existingUsers = userRepository.findAll();
+        if (userRepository.existsByUsername(request.username())) {
+            throw new IllegalArgumentException("User with Username " + request.username() + " already exists");
+        }
 
-        for (User existingUser : existingUsers) {
-            if (existingUser.getUsername().equals(request.username())) {
-                throw new IllegalArgumentException("User with Username " + request.username() + " already exists");
-            }
-
-            if (existingUser.getEmail().equals(request.email())) {
-                throw new IllegalArgumentException("User with Email " + request.email() + " already exists");
-            }
+        if (userRepository.existsByEmail(request.email())) {
+            throw new IllegalArgumentException("User with Email " + request.email() + " already exists");
         }
 
         User user = request.toUser();
@@ -82,6 +78,14 @@ public class BasicUserService implements UserService {
             if (user.getProfileImageId() != null) {
                 binaryContentRepository.delete(user.getProfileImageId());
             }
+        }
+
+        if (request.email() != null && userRepository.existsByEmail(request.email())) {
+            throw new IllegalArgumentException("User with Email " + request.email() + " already exists");
+        }
+
+        if (request.username() != null && userRepository.existsByUsername(request.username())) {
+            throw new IllegalArgumentException("User with Username " + request.username() + " already exists");
         }
 
         user.update(

@@ -1,5 +1,6 @@
 package com.sprint.mission.discodeit;
 
+import com.sprint.mission.discodeit.dto.binarycontent.BinaryContentCreateRequest;
 import com.sprint.mission.discodeit.dto.channel.PublicChannelCreateRequest;
 import com.sprint.mission.discodeit.dto.message.MessageCreateRequest;
 import com.sprint.mission.discodeit.dto.message.MessageResponse;
@@ -7,12 +8,11 @@ import com.sprint.mission.discodeit.dto.message.MessageUpdateRequest;
 import com.sprint.mission.discodeit.dto.user.UserCreateRequest;
 import com.sprint.mission.discodeit.dto.user.UserResponse;
 import com.sprint.mission.discodeit.dto.user.UserUpdateRequest;
+import com.sprint.mission.discodeit.entity.BinaryContent;
 import com.sprint.mission.discodeit.entity.Channel;
 import com.sprint.mission.discodeit.entity.Message;
 import com.sprint.mission.discodeit.entity.User;
-import com.sprint.mission.discodeit.service.ChannelService;
-import com.sprint.mission.discodeit.service.MessageService;
-import com.sprint.mission.discodeit.service.UserService;
+import com.sprint.mission.discodeit.service.*;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.ConfigurableApplicationContext;
@@ -21,6 +21,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.List;
 
 @SpringBootApplication
 public class DiscodeitApplication {
@@ -31,10 +32,15 @@ public class DiscodeitApplication {
 		UserService userService = context.getBean(UserService.class);
 		ChannelService channelService = context.getBean(ChannelService.class);
 		MessageService messageService = context.getBean(MessageService.class);
+		BinaryContentService binaryContentService = context.getBean(BinaryContentService.class);
+		UserStatusService userStatusService = context.getBean(UserStatusService.class);
+		ReadStatusService readStatusService = context.getBean(ReadStatusService.class);
 
-//		clearDataFiles();
 
-		runTest(userService, channelService, messageService);
+		clearDataFiles();
+
+		runTest(userService, channelService, messageService,
+				binaryContentService, userStatusService, readStatusService);
 	}
 
 	private static void clearDataFiles() {
@@ -42,7 +48,7 @@ public class DiscodeitApplication {
 		
 		try {
 			if (Files.exists(dataMapPath)) {
-				// file-data-map 하위의 모든 파일과 삭제
+				// file-data-map 하위의 모든 파일을 역순으로 탐색하여 .ser 파일만 삭제
 				Files.walk(dataMapPath)
 					.sorted((a, b) -> b.compareTo(a)) // 역순 정렬 (하위부터 삭제)
 					.forEach(path -> {
@@ -62,11 +68,21 @@ public class DiscodeitApplication {
 		}
 	}
 
-	private static void runTest(UserService userService, ChannelService channelService, MessageService messageService) {
+	private static void runTest(UserService userService,
+								ChannelService channelService,
+								MessageService messageService,
+								BinaryContentService binaryContentService,
+								UserStatusService userStatusService,
+								ReadStatusService readStatusService) {
 		try {
 			System.out.println("========== [1. 데이터 일괄 생성] ==========");
+			BinaryContent b1 = binaryContentService.create(new BinaryContentCreateRequest("kdksadflaflflaslslfafssaasd".getBytes()));
+			BinaryContent b2 = binaryContentService.create(new BinaryContentCreateRequest("kdkasjdkasfaskdasddasdkdkdkdkdasaddasdd".getBytes()));
+
+
+
 			// User 엔티티에 nickname이 없으므로 username, email, password만 사용
-			User u1 = userService.create(new UserCreateRequest("lee", "lee@test.com", "1234", null));
+			User u1 = userService.create(new UserCreateRequest("lee", "lee@test.com", "1234", b1.getId()));
 			User u2 = userService.create(new UserCreateRequest("song", "song@test.com", "2345", null));
 			User u3 = userService.create(new UserCreateRequest("kim", "kim@test.com", "3456", null));
 
@@ -78,7 +94,7 @@ public class DiscodeitApplication {
 
 			// Message 생성 (인자 순서: content, channelId, authorId)
 // 채널 1 (자바 공부방) 메시지 생성
-			messageService.create(new MessageCreateRequest(c1.getId(), u1.getId(), "안녕하세요, 자바 공부 시작합니다!", null));
+			messageService.create(new MessageCreateRequest(c1.getId(), u1.getId(), "안녕하세요, 자바 공부 시작합니다!", List.of(b2.getId())));
 			messageService.create(new MessageCreateRequest(c1.getId(), u2.getId(), "반가워요 경훈님!", null));
 			messageService.create(new MessageCreateRequest(c1.getId(), u3.getId(), "저도 같이 공부해요.", null));
 			messageService.create(new MessageCreateRequest(c1.getId(), u1.getId(), "제네릭이 너무 어렵네요ㅠㅠ", null));
@@ -112,16 +128,18 @@ public class DiscodeitApplication {
 
 			System.out.println("\n========== [2-2. 유저 전체 조회] ==========");
 			for (UserResponse u : userService.findAll()) {
-				System.out.println("ID : " + u.id() + " | 이름 : " + u.username() + " | 이메일 : " + u.email());
+				System.out.println("ID : " + u.id() + " | 이름 : " + u.username() + " | 이메일 : " + u.email() + "| 프로필 :" + u.profileImageId());
 			}
 
 			System.out.println("\n========== [3. 수정 및 재조회 검증] ==========");
 			System.out.println("유저2 수정 전 이름: " + u2.getUsername());
+			System.out.println("유저2 수정 전 프로필 이미지 ID: " + u2.getProfileImageId());
 			// BasicUserService.update(id, username, email, password)
-			userService.update(new UserUpdateRequest(u2.getId(), "민형마스터", null, null, null));
+			userService.update(new UserUpdateRequest(u2.getId(), "민형마스터", null, null, b2.getId()));
 
 			UserResponse updatedU2 = userService.find(u2.getId());
 			System.out.println("수정 후 이름: " + updatedU2.username());
+			System.out.println("수정 후 프로필 이미지 ID: " + updatedU2.profileImageId());
 
 			// 메시지 수정 (content만 수정)
 			messageService.update(new MessageUpdateRequest(m1.id(), "전 풀스택 할래요!", null));
