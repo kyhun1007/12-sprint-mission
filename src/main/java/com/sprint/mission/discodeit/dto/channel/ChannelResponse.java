@@ -15,4 +15,14 @@ public record ChannelResponse(
         Instant lastTime,
         List<UUID> users
 ) {
+//    public static ChannelResponse from(Channel channel) {
+//        return new ChannelResponse(
+//                channel.getId(),
+//                channel.getName(),
+//                channel.getDescription(),
+//                channel.getType(),
+//                channel.getLastTime(),
+//                channel.getUsers().stream().map(user -> user.getId()).toList()
+//        );
+//    }
 }

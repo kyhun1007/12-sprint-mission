@@ -40,6 +40,8 @@ public class DiscodeitApplication {
 
 		runTest(userService, channelService, messageService,
 				binaryContentService, userStatusService, readStatusService);
+
+		System.out.println("http://localhost:8080/");
 	}
 
 	private static void clearDataFiles() {
@@ -102,43 +104,43 @@ public class DiscodeitApplication {
 			System.out.println("전체 메시지 등록 완료 c1 : " + messageService.findAllByChannelId(c1.getId()).size() + "개");
 			System.out.println("전체 메시지 등록 완료 c2 : " + messageService.findAllByChannelId(c2.getId()).size() + "개\n");
 
-			System.out.println("========== [2-1. 특정 메시지 조회] ==========");
-			String channelName = channelService.find(m1.channelId()).name();
-			String userName = userService.find(m1.authorId()).username();
-
-			System.out.println("채널 : " + channelName + " | 작성자 : " + userName);
-			System.out.println("내용 : " + m1.content());
-			System.out.println("----------------------------------------------------");
-
-			System.out.println("\n========== [2-2. 유저 전체 조회] ==========");
-			for (UserResponse u : userService.findAll()) {
-				System.out.println("ID : " + u.id() + " | 이름 : " + u.username() + " | 이메일 : " + u.email() + "| 프로필 :" + u.profileImageId());
-			}
-
-			System.out.println("\n========== [3. 수정 및 재조회 검증] ==========");
-			System.out.println("유저2 수정 전 이름: " + u2.getUsername());
-			System.out.println("유저2 수정 전 프로필 이미지 ID: " + u2.getProfileImageId());
-			userService.update(new UserUpdateRequest(u2.getId(), "민형마스터", null, null, b2.getId()));
-
-			UserResponse updatedU2 = userService.find(u2.getId());
-			System.out.println("수정 후 이름: " + updatedU2.username());
-			System.out.println("수정 후 프로필 이미지 ID: " + updatedU2.profileImageId());
-
-			messageService.update(new MessageUpdateRequest(m1.id(), "전 풀스택 할래요!", null));
-
-			Message updatedM1 = messageService.find(m1.id());
-			System.out.println("수정된 메시지 내용: " + updatedM1.getContent());
-
-			System.out.println("\n========== [4. 특정 데이터 삭제 검증] ==========");
-			System.out.println("삭제 전 메시지 수: " + messageService.totalMessageNumber());
-			messageService.delete(m1.id());
-			System.out.println("삭제 후 메시지 수: " + messageService.totalMessageNumber());
-
-			System.out.println("\n========== [5. 채널 삭제] ==========");
-			channelService.delete(c1.getId());
-			System.out.println("남은 채널 수: " + channelService.findAllByUserId(u1.getId()).size());
-
-			System.out.println("\n========= 모든 테스트 시나리오 종료 =========");
+//			System.out.println("========== [2-1. 특정 메시지 조회] ==========");
+//			String channelName = channelService.find(m1.channelId()).name();
+//			String userName = userService.find(m1.authorId()).username();
+//
+//			System.out.println("채널 : " + channelName + " | 작성자 : " + userName);
+//			System.out.println("내용 : " + m1.content());
+//			System.out.println("----------------------------------------------------");
+//
+//			System.out.println("\n========== [2-2. 유저 전체 조회] ==========");
+//			for (UserResponse u : userService.findAll()) {
+//				System.out.println("ID : " + u.id() + " | 이름 : " + u.username() + " | 이메일 : " + u.email() + "| 프로필 :" + u.profileImageId());
+//			}
+//
+//			System.out.println("\n========== [3. 수정 및 재조회 검증] ==========");
+//			System.out.println("유저2 수정 전 이름: " + u2.getUsername());
+//			System.out.println("유저2 수정 전 프로필 이미지 ID: " + u2.getProfileImageId());
+//			userService.update(new UserUpdateRequest(u2.getId(), "민형마스터", null, null, b2.getId()));
+//
+//			UserResponse updatedU2 = userService.find(u2.getId());
+//			System.out.println("수정 후 이름: " + updatedU2.username());
+//			System.out.println("수정 후 프로필 이미지 ID: " + updatedU2.profileImageId());
+//
+//			messageService.update(new MessageUpdateRequest(m1.id(), "전 풀스택 할래요!", null));
+//
+//			Message updatedM1 = messageService.find(m1.id());
+//			System.out.println("수정된 메시지 내용: " + updatedM1.getContent());
+//
+//			System.out.println("\n========== [4. 특정 데이터 삭제 검증] ==========");
+//			System.out.println("삭제 전 메시지 수: " + messageService.totalMessageNumber());
+//			messageService.delete(m1.id());
+//			System.out.println("삭제 후 메시지 수: " + messageService.totalMessageNumber());
+//
+//			System.out.println("\n========== [5. 채널 삭제] ==========");
+//			channelService.delete(c1.getId());
+//			System.out.println("남은 채널 수: " + channelService.findAllByUserId(u1.getId()).size());
+//
+//			System.out.println("\n========= 모든 테스트 시나리오 종료 =========");
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

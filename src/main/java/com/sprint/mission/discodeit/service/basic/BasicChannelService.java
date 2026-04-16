@@ -33,12 +33,21 @@ public class BasicChannelService implements ChannelService {
     @Override
     public Channel createPublicChannel(PublicChannelCreateRequest request) {
         Channel channel = new Channel(ChannelType.PUBLIC, request.name(), request.description());
+
+        if (channelRepository.findAll().stream().anyMatch(c -> c.getName().equals(request.name()))) {
+            throw new IllegalArgumentException("Channel with name " + request.name() + " already exists");
+        }
+
         return channelRepository.save(channel);
     }
 
     public Channel createPrivateChannel(PrivateChannelCreateRequest request){
         if (request.users().size() < 2) {
             throw new IllegalArgumentException("Private channel must have at least 2 users");
+        }
+
+        if (channelRepository.findAll().stream().anyMatch(c -> c.getName().equals(request.name()))) {
+            throw new IllegalArgumentException("Private channel with name " + request.name() + " already exists");
         }
 
         Channel channel = new Channel(ChannelType.PRIVATE, request.name(), null);
