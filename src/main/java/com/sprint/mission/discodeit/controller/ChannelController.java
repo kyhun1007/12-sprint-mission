@@ -1,17 +1,13 @@
 package com.sprint.mission.discodeit.controller;
 
-import com.sprint.mission.discodeit.dto.channel.ChannelResponse;
+import com.sprint.mission.discodeit.dto.channel.ChannelDto;
 import com.sprint.mission.discodeit.dto.channel.ChannelUpdateRequest;
 import com.sprint.mission.discodeit.dto.channel.PrivateChannelCreateRequest;
 import com.sprint.mission.discodeit.dto.channel.PublicChannelCreateRequest;
-import com.sprint.mission.discodeit.entity.Channel;
 import com.sprint.mission.discodeit.service.ChannelService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.UUID;
@@ -24,34 +20,34 @@ public class ChannelController {
 
     @RequestMapping(value = "/createPublic", method = RequestMethod.POST)
     @ResponseBody
-    public ChannelResponse createPublic(@ModelAttribute PublicChannelCreateRequest request){
+    public ChannelDto createPublic(@ModelAttribute PublicChannelCreateRequest request){
         UUID id = channelService.createPublicChannel(request).getId();
         return channelService.find(id);
     }
 
     @RequestMapping(value = "/createPrivate", method = RequestMethod.POST)
     @ResponseBody
-    public ChannelResponse createPrivate(@ModelAttribute PrivateChannelCreateRequest request){
+    public ChannelDto createPrivate(@RequestBody PrivateChannelCreateRequest request){
         UUID id = channelService.createPrivateChannel(request).getId();
         return channelService.find(id);
     }
 
     @RequestMapping(value = "/update",  method = RequestMethod.POST)
     @ResponseBody
-    public ChannelResponse update(@ModelAttribute ChannelUpdateRequest request){
+    public ChannelDto update(@ModelAttribute ChannelUpdateRequest request){
         return channelService.update(request);
     }
 
     @RequestMapping(value = "/delete", method = RequestMethod.POST)
     @ResponseBody
-    public String delete(@ModelAttribute UUID channelId){
+    public String delete(@RequestParam UUID channelId){
         channelService.delete(channelId);
         return "channel deleted : " + channelId;
     }
 
     @RequestMapping(value = "/find",  method = RequestMethod.GET)
     @ResponseBody
-    public List<ChannelResponse> find(@ModelAttribute UUID userId){
+    public List<ChannelDto> find(@RequestParam UUID userId){
         return channelService.findAllByUserId(userId);
     }
 

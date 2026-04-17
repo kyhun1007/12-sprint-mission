@@ -1,18 +1,15 @@
 package com.sprint.mission.discodeit.controller;
 
 import com.sprint.mission.discodeit.dto.user.UserCreateRequest;
-import com.sprint.mission.discodeit.dto.user.UserResponse;
+import com.sprint.mission.discodeit.dto.user.UserDto;
 import com.sprint.mission.discodeit.dto.user.UserUpdateRequest;
-import com.sprint.mission.discodeit.dto.userstatus.UserStatusUpdateRequest;
 import com.sprint.mission.discodeit.entity.User;
 import com.sprint.mission.discodeit.service.UserService;
 import com.sprint.mission.discodeit.service.UserStatusService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
-import java.lang.reflect.Method;
 import java.util.List;
 import java.util.UUID;
 
@@ -34,7 +31,7 @@ public class UserController {
     @RequestMapping(value = "/update",  method = RequestMethod.POST)
     @ResponseBody
     public String update(@ModelAttribute UserUpdateRequest request) {
-        UserResponse user = userService.update(request);
+        UserDto user = userService.update(request);
         return "user updated : " + user.id();
     }
 
@@ -47,7 +44,7 @@ public class UserController {
 
     @RequestMapping(value = "/userList", method = RequestMethod.GET)
     @ResponseBody
-    public List<UserResponse> userList() {
+    public List<UserDto> userList() {
         return userService.findAll();
     }
 

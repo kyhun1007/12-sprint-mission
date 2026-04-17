@@ -1,6 +1,6 @@
 package com.sprint.mission.discodeit.service.basic;
 
-import com.sprint.mission.discodeit.dto.channel.ChannelResponse;
+import com.sprint.mission.discodeit.dto.channel.ChannelDto;
 import com.sprint.mission.discodeit.dto.channel.ChannelUpdateRequest;
 import com.sprint.mission.discodeit.dto.channel.PrivateChannelCreateRequest;
 import com.sprint.mission.discodeit.dto.channel.PublicChannelCreateRequest;
@@ -10,13 +10,10 @@ import com.sprint.mission.discodeit.repository.MessageRepository;
 import com.sprint.mission.discodeit.repository.ReadStatusRepository;
 import com.sprint.mission.discodeit.repository.UserRepository;
 import com.sprint.mission.discodeit.service.ChannelService;
-import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.UUID;
@@ -42,7 +39,7 @@ public class BasicChannelService implements ChannelService {
     }
 
     public Channel createPrivateChannel(PrivateChannelCreateRequest request){
-        if (request.users().size() < 2) {
+        if (request.userIds().size() < 2) {
             throw new IllegalArgumentException("Private channel must have at least 2 users");
         }
 
@@ -52,11 +49,11 @@ public class BasicChannelService implements ChannelService {
 
         Channel channel = new Channel(ChannelType.PRIVATE, request.name(), null);
 
-        request.users().forEach(user -> {
-            if (!userRepository.existsById(user.getId())) {
-                throw new NoSuchElementException("User with id " + user.getId() + " not found");
+        request.userIds().forEach(userId -> {
+            if (!userRepository.existsById(userId)) {
+                throw new NoSuchElementException("User with id " + userId + " not found");
             }
-            ReadStatus readStatus = new ReadStatus(user.getId(), channel.getId());
+            ReadStatus readStatus = new ReadStatus(userId, channel.getId());
             readStatusRepository.save(readStatus);
         });
 
@@ -64,7 +61,7 @@ public class BasicChannelService implements ChannelService {
     }
 
     @Override
-    public ChannelResponse find(UUID channelId) {
+    public ChannelDto find(UUID channelId) {
         Channel ch = channelRepository.findById(channelId)
                 .orElseThrow(() -> new NoSuchElementException("Channel with id " + channelId + " not found (channel -> find)"));
 
@@ -77,14 +74,14 @@ public class BasicChannelService implements ChannelService {
                     .map(ReadStatus::getUserId)
                     .toList();
 
-            return new ChannelResponse(ch.getId(), ch.getName(), null, ch.getType(), lastMessageTime, userIds);
+            return new ChannelDto(ch.getId(), ch.getName(), null, ch.getType(), lastMessageTime, userIds);
         }
 
-        return new ChannelResponse(ch.getId(), ch.getName(), ch.getDescription(), ch.getType(), lastMessageTime, null);
+        return new ChannelDto(ch.getId(), ch.getName(), ch.getDescription(), ch.getType(), lastMessageTime, null);
     }
 
     @Override
-    public List<ChannelResponse> findAllByUserId(UUID userId) {
+    public List<ChannelDto> findAllByUserId(UUID userId) {
         List<UUID> publicChannelIds = channelRepository.findAll().stream()
                 .filter(c -> c.getType() == ChannelType.PUBLIC)
                 .map(Channel::getId)
@@ -101,7 +98,7 @@ public class BasicChannelService implements ChannelService {
     }
 
     @Override
-    public ChannelResponse update(ChannelUpdateRequest request) {
+    public ChannelDto update(ChannelUpdateRequest request) {
         Channel channel = channelRepository.findById(request.id())
                 .orElseThrow(() -> new NoSuchElementException("Channel with id " + request.id() + " not found"));
 

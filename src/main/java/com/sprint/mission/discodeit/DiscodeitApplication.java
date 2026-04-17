@@ -3,14 +3,10 @@ package com.sprint.mission.discodeit;
 import com.sprint.mission.discodeit.dto.binarycontent.BinaryContentCreateRequest;
 import com.sprint.mission.discodeit.dto.channel.PublicChannelCreateRequest;
 import com.sprint.mission.discodeit.dto.message.MessageCreateRequest;
-import com.sprint.mission.discodeit.dto.message.MessageResponse;
-import com.sprint.mission.discodeit.dto.message.MessageUpdateRequest;
+import com.sprint.mission.discodeit.dto.message.MessageDto;
 import com.sprint.mission.discodeit.dto.user.UserCreateRequest;
-import com.sprint.mission.discodeit.dto.user.UserResponse;
-import com.sprint.mission.discodeit.dto.user.UserUpdateRequest;
 import com.sprint.mission.discodeit.entity.BinaryContent;
 import com.sprint.mission.discodeit.entity.Channel;
-import com.sprint.mission.discodeit.entity.Message;
 import com.sprint.mission.discodeit.entity.User;
 import com.sprint.mission.discodeit.service.*;
 import org.springframework.boot.SpringApplication;
@@ -36,7 +32,7 @@ public class DiscodeitApplication {
 		UserStatusService userStatusService = context.getBean(UserStatusService.class);
 		ReadStatusService readStatusService = context.getBean(ReadStatusService.class);
 
-		clearDataFiles();
+//		clearDataFiles();
 
 		runTest(userService, channelService, messageService,
 				binaryContentService, userStatusService, readStatusService);
@@ -99,7 +95,7 @@ public class DiscodeitApplication {
 			messageService.create(new MessageCreateRequest(c2.getId(), u1.getId(), "프로젝트 주제 정해졌나요?", null));
 			messageService.create(new MessageCreateRequest(c2.getId(), u2.getId(), "채팅 서비스로 하기로 했어요.", null));
 			messageService.create(new MessageCreateRequest(c2.getId(), u3.getId(), "저는 백엔드 맡을게요.", null));
-			MessageResponse m1 = messageService.create(new MessageCreateRequest(c2.getId(), u1.getId(), "그럼 전 프론트엔드 할게요!", null));
+			MessageDto m1 = messageService.create(new MessageCreateRequest(c2.getId(), u1.getId(), "그럼 전 프론트엔드 할게요!", null));
 
 			System.out.println("전체 메시지 등록 완료 c1 : " + messageService.findAllByChannelId(c1.getId()).size() + "개");
 			System.out.println("전체 메시지 등록 완료 c2 : " + messageService.findAllByChannelId(c2.getId()).size() + "개\n");
