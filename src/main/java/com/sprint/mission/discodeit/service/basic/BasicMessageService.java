@@ -1,21 +1,17 @@
 package com.sprint.mission.discodeit.service.basic;
 
 import com.sprint.mission.discodeit.dto.message.MessageCreateRequest;
-import com.sprint.mission.discodeit.dto.message.MessageResponse;
+import com.sprint.mission.discodeit.dto.message.MessageDto;
 import com.sprint.mission.discodeit.dto.message.MessageUpdateRequest;
 import com.sprint.mission.discodeit.entity.Channel;
 import com.sprint.mission.discodeit.entity.Message;
 import com.sprint.mission.discodeit.repository.*;
-import com.sprint.mission.discodeit.repository.file.FileChannelRepository;
 import com.sprint.mission.discodeit.service.MessageService;
-import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.NoSuchElementException;
-import java.util.Optional;
 import java.util.UUID;
 
 @Service("basicMessageService")
@@ -27,7 +23,7 @@ public class BasicMessageService implements MessageService {
     private final BinaryContentRepository binaryContentRepository;
 
     @Override
-    public MessageResponse create(MessageCreateRequest request) {
+    public MessageDto create(MessageCreateRequest request) {
         if (!channelRepository.existsById(request.channelId())) {
             throw new NoSuchElementException("Channel not found with id " + request.channelId());
         }
@@ -35,6 +31,12 @@ public class BasicMessageService implements MessageService {
         if (!userRepository.existsById(request.authorId())) {
             throw new NoSuchElementException("Author not found with id " + request.authorId());
         }
+
+        request.attachmentIds().forEach(attachmentId -> {
+            if (!binaryContentRepository.existsById(attachmentId)) {
+                throw new NoSuchElementException("Attachment not found with id " + attachmentId);
+            }
+        });
 
         Message message = new Message(
                 request.content(),
@@ -47,7 +49,7 @@ public class BasicMessageService implements MessageService {
 
         // 메세지 시간 업데이트?
 
-        return MessageResponse.from(message);
+        return MessageDto.from(message);
     }
 
     @Override
@@ -57,25 +59,25 @@ public class BasicMessageService implements MessageService {
     }
 
     @Override
-    public List<MessageResponse> findAllByChannelId(UUID channelId) {
+    public List<MessageDto> findAllByChannelId(UUID channelId) {
         Channel channel = channelRepository.findById(channelId)
                 .orElseThrow(() -> new NoSuchElementException("Channel with id " + channelId + " not found (message -> findAllByChannelId).)"));
 
         return messageRepository.findAll().stream()
                 .filter(message -> message.getChannelId().equals(channelId))
-                .map(MessageResponse::from)
+                .map(MessageDto::from)
                 .toList();
     }
 
     @Override
-    public MessageResponse update(MessageUpdateRequest request) {
+    public MessageDto update(MessageUpdateRequest request) {
         Message message = messageRepository.findById(request.id())
                 .orElseThrow(() -> new NoSuchElementException("Message with id " + request.id() + " not found"));
 
         message.update(request.content());
         messageRepository.save(message);
 
-        return MessageResponse.from(message);
+        return MessageDto.from(message);
     }
 
     @Override

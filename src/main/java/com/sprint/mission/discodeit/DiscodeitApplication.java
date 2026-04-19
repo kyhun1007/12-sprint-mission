@@ -3,10 +3,10 @@ package com.sprint.mission.discodeit;
 import com.sprint.mission.discodeit.dto.binarycontent.BinaryContentCreateRequest;
 import com.sprint.mission.discodeit.dto.channel.PublicChannelCreateRequest;
 import com.sprint.mission.discodeit.dto.message.MessageCreateRequest;
-import com.sprint.mission.discodeit.dto.message.MessageResponse;
+import com.sprint.mission.discodeit.dto.message.MessageDto;
 import com.sprint.mission.discodeit.dto.message.MessageUpdateRequest;
 import com.sprint.mission.discodeit.dto.user.UserCreateRequest;
-import com.sprint.mission.discodeit.dto.user.UserResponse;
+import com.sprint.mission.discodeit.dto.user.UserDto;
 import com.sprint.mission.discodeit.dto.user.UserUpdateRequest;
 import com.sprint.mission.discodeit.entity.BinaryContent;
 import com.sprint.mission.discodeit.entity.Channel;
@@ -97,7 +97,7 @@ public class DiscodeitApplication {
 			messageService.create(new MessageCreateRequest(c2.getId(), u1.getId(), "프로젝트 주제 정해졌나요?", null));
 			messageService.create(new MessageCreateRequest(c2.getId(), u2.getId(), "채팅 서비스로 하기로 했어요.", null));
 			messageService.create(new MessageCreateRequest(c2.getId(), u3.getId(), "저는 백엔드 맡을게요.", null));
-			MessageResponse m1 = messageService.create(new MessageCreateRequest(c2.getId(), u1.getId(), "그럼 전 프론트엔드 할게요!", null));
+			MessageDto m1 = messageService.create(new MessageCreateRequest(c2.getId(), u1.getId(), "그럼 전 프론트엔드 할게요!", null));
 
 			System.out.println("전체 메시지 등록 완료 c1 : " + messageService.findAllByChannelId(c1.getId()).size() + "개");
 			System.out.println("전체 메시지 등록 완료 c2 : " + messageService.findAllByChannelId(c2.getId()).size() + "개\n");
@@ -111,7 +111,7 @@ public class DiscodeitApplication {
 			System.out.println("----------------------------------------------------");
 
 			System.out.println("\n========== [2-2. 유저 전체 조회] ==========");
-			for (UserResponse u : userService.findAll()) {
+			for (UserDto u : userService.findAll()) {
 				System.out.println("ID : " + u.id() + " | 이름 : " + u.username() + " | 이메일 : " + u.email() + "| 프로필 :" + u.profileImageId());
 			}
 
@@ -120,7 +120,7 @@ public class DiscodeitApplication {
 			System.out.println("유저2 수정 전 프로필 이미지 ID: " + u2.getProfileImageId());
 			userService.update(new UserUpdateRequest(u2.getId(), "민형마스터", null, null, b2.getId()));
 
-			UserResponse updatedU2 = userService.find(u2.getId());
+			UserDto updatedU2 = userService.find(u2.getId());
 			System.out.println("수정 후 이름: " + updatedU2.username());
 			System.out.println("수정 후 프로필 이미지 ID: " + updatedU2.profileImageId());
 

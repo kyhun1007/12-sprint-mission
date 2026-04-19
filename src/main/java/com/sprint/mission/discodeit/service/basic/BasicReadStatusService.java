@@ -1,7 +1,7 @@
 package com.sprint.mission.discodeit.service.basic;
 
 import com.sprint.mission.discodeit.dto.readstatus.ReadStatusCreateRequest;
-import com.sprint.mission.discodeit.dto.readstatus.ReadStatusResponse;
+import com.sprint.mission.discodeit.dto.readstatus.ReadStatusDto;
 import com.sprint.mission.discodeit.dto.readstatus.ReadStatusUpdateRequest;
 import com.sprint.mission.discodeit.entity.ReadStatus;
 import com.sprint.mission.discodeit.repository.ChannelRepository;
@@ -22,7 +22,7 @@ public class BasicReadStatusService implements ReadStatusService {
     private final ChannelRepository channelRepository;
 
     @Override
-    public ReadStatusResponse create(ReadStatusCreateRequest request) {
+    public ReadStatusDto create(ReadStatusCreateRequest request) {
         if (!userRepository.existsById(request.userId())) {
             throw new IllegalArgumentException("User with id " + request.userId() + " not found (read status -> create)");
         }
@@ -36,29 +36,29 @@ public class BasicReadStatusService implements ReadStatusService {
 
         ReadStatus readStatus = readStatusRepository.save(new ReadStatus(request.userId(), request.channelId()));
 
-        return ReadStatusResponse.from(readStatus);
+        return ReadStatusDto.from(readStatus);
     }
 
     @Override
-    public ReadStatusResponse find(UUID id) {
+    public ReadStatusDto find(UUID id) {
         return readStatusRepository.findById(id)
-                .map(ReadStatusResponse::from)
+                .map(ReadStatusDto::from)
                 .orElseThrow(() -> new IllegalArgumentException("Read status with id " + id + " not found (read status -> find)"));
     }
 
     @Override
-    public List<ReadStatusResponse> findAllByUserId(UUID userId) {
+    public List<ReadStatusDto> findAllByUserId(UUID userId) {
         if (!userRepository.existsById(userId)) {
             throw new IllegalArgumentException("User with id " + userId + " not found (read status -> find all by user id)");
         }
 
         return readStatusRepository.findAllByUserId(userId).stream()
-                .map(ReadStatusResponse::from)
+                .map(ReadStatusDto::from)
                 .toList();
     }
 
     @Override
-    public ReadStatusResponse update(ReadStatusUpdateRequest request) {
+    public ReadStatusDto update(ReadStatusUpdateRequest request) {
         ReadStatus readStatus = readStatusRepository.findById(request.id())
                 .orElseThrow(() -> new IllegalArgumentException("Read status with id " + request.id() + " not found (read status -> update)"));
 

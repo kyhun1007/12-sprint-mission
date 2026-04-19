@@ -77,4 +77,9 @@ public class FileBinaryContentRepository implements BinaryContentRepository {
             throw new RuntimeException(e);
         }
     }
+
+    @Override
+    public boolean existsById(UUID id) {
+        return Files.exists(resolvePath(id));
+    }
 }

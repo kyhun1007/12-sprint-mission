@@ -35,4 +35,10 @@ public class JCFBinaryContentRepository implements BinaryContentRepository {
     public void delete(UUID id) {
         this.data.remove(id);
     }
+
+    @Override
+    public boolean existsById(UUID id) {
+        return this.data.values().stream()
+                .anyMatch(binaryContent -> binaryContent.getId().equals(id));
+    }
 }

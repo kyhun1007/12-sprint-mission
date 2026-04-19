@@ -1,7 +1,7 @@
 package com.sprint.mission.discodeit.service.basic;
 
 import com.sprint.mission.discodeit.dto.user.UserCreateRequest;
-import com.sprint.mission.discodeit.dto.user.UserResponse;
+import com.sprint.mission.discodeit.dto.user.UserDto;
 import com.sprint.mission.discodeit.dto.user.UserUpdateRequest;
 import com.sprint.mission.discodeit.entity.User;
 import com.sprint.mission.discodeit.entity.UserStatus;
@@ -43,18 +43,18 @@ public class BasicUserService implements UserService {
     }
 
     @Override
-    public UserResponse find(UUID userId) {
+    public UserDto find(UUID userId) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new NoSuchElementException("User with id " + userId + " not found (UserService-find)"));
 
         UserStatus status = userStatusRepository.findByUserId(user.getId())
                 .orElseThrow(() -> new NoSuchElementException("UserStatus for user id " + userId + " not found (UserService-find)"));
 
-        return  UserResponse.from(user, status);
+        return  UserDto.from(user, status);
     }
 
     @Override
-    public List<UserResponse> findAll() {
+    public List<UserDto> findAll() {
         List<User> users = userRepository.findAll();
         List<UserStatus> statuses = userStatusRepository.findAll();
 
@@ -64,13 +64,13 @@ public class BasicUserService implements UserService {
         return users.stream()
                 .map(user -> {
                     UserStatus status = statusMap.getOrDefault(user.getId(), new UserStatus());
-                    return UserResponse.from(user, status);
+                    return UserDto.from(user, status);
                 })
                 .toList();
     }
 
     @Override
-    public UserResponse update(UserUpdateRequest request) {
+    public UserDto update(UserUpdateRequest request) {
         User user = userRepository.findById(request.id())
                 .orElseThrow(() -> new NoSuchElementException("User with id " + request.id() + " not found (UserService-update)"));
 
@@ -100,7 +100,7 @@ public class BasicUserService implements UserService {
         UserStatus status = userStatusRepository.findByUserId(request.id())
                 .orElse(new UserStatus());
 
-        return UserResponse.from(user, status);
+        return UserDto.from(user, status);
     }
 
     @Override
