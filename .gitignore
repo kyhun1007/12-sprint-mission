@@ -1,0 +1,57 @@
+### Build & Dependency Management ###
+.gradle
+build/
+!gradle/wrapper/gradle-wrapper.jar
+!**/src/main/**/build/
+!**/src/test/**/build/
+bin/
+!**/src/main/**/bin/
+!**/src/test/**/bin/
+out/
+!**/src/main/**/out/
+!**/src/test/**/out/
+.kotlin
+HELP.md
+
+### IntelliJ IDEA ###
+.idea/
+*.iws
+*.iml
+*.ipr
+
+# 아래는 특정 설정을 공유하고 싶지 않을 때 추가로 제외되는 항목들입니다.
+.idea/modules.xml
+.idea/jarRepositories.xml
+.idea/compiler.xml
+.idea/libraries/
+
+### Eclipse / STS ###
+.apt_generated
+.classpath
+.factorypath
+.project
+.settings
+.springBeans
+.sts4-cache
+
+### NetBeans ###
+/nbproject/private/
+/nbbuild/
+/dist/
+/nbdist/
+/.nb-gradle/
+
+### VS Code ###
+.vscode/
+
+### Operating System ###
+.DS_Store
+Thumbs.db
+
+### Others ###
+*.log
+*.tmp
+
+### Generated files ###
+file-data-map/
+*.ser
