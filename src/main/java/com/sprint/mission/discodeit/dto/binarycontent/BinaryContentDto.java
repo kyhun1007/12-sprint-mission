@@ -4,13 +4,13 @@ import com.sprint.mission.discodeit.entity.BinaryContent;
 
 import java.util.Base64;
 
-public record BinaryContentResponse(
+public record BinaryContentDto(
         String id,
         String contentType,
         String bytes
 ) {
-    public static BinaryContentResponse from(BinaryContent entity) {
-        return new BinaryContentResponse(
+    public static BinaryContentDto from(BinaryContent entity) {
+        return new BinaryContentDto(
                 entity.getId().toString(),
                 entity.getContentType(),
                 Base64.getEncoder().encodeToString(entity.getBytes())
