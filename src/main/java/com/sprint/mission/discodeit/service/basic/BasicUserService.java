@@ -25,6 +25,7 @@ public class BasicUserService implements UserService {
     private final BinaryContentRepository binaryContentRepository;
     private final UserStatusRepository userStatusRepository;
 
+    @Override
     public User create(UserCreateRequest request) {
         if (userRepository.existsByUsername(request.username())) {
             throw new IllegalArgumentException("User with Username " + request.username() + " already exists");
