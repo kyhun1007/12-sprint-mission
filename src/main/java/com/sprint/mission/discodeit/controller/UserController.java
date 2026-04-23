@@ -28,14 +28,14 @@ public class UserController {
         return "user created : " + user.getId();
     }
 
-    @RequestMapping(value = "/update",  method = RequestMethod.POST)
+    @RequestMapping(value = "/update",  method = RequestMethod.PATCH)
     @ResponseBody
     public String update(@ModelAttribute UserUpdateRequest request) {
         UserDto user = userService.update(request);
-        return "user updated : " + user.id();
+        return "user updated : \n" + user;
     }
 
-    @RequestMapping(value = "/delete", method = RequestMethod.POST)
+    @RequestMapping(value = "/delete", method = RequestMethod.DELETE)
     @ResponseBody
     public String delete(@RequestParam UUID id) {
         userService.delete(id);
@@ -48,7 +48,7 @@ public class UserController {
         return userService.findAll();
     }
 
-    @RequestMapping(value = "/userStatusUpdate", method = RequestMethod.POST)
+    @RequestMapping(value = "/userStatusUpdate", method = RequestMethod.PATCH)
     @ResponseBody
     public String userStatusUpdate(@RequestParam UUID id) {
         userStatusService.updateByUserId(id);

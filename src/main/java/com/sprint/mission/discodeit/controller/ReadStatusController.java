@@ -23,7 +23,7 @@ public class ReadStatusController {
         return "created ID : " + readStatusService.create(request).id();
     }
 
-    @RequestMapping(value = "/update",  method = RequestMethod.POST)
+    @RequestMapping(value = "/update",  method = RequestMethod.PATCH)
     @ResponseBody
     public String update(@ModelAttribute ReadStatusUpdateRequest request) {
         return "updated ID : " + readStatusService.update(request).id();

@@ -32,13 +32,13 @@ public class ChannelController {
         return channelService.find(id);
     }
 
-    @RequestMapping(value = "/update",  method = RequestMethod.POST)
+    @RequestMapping(value = "/update",  method = RequestMethod.PATCH)
     @ResponseBody
     public ChannelDto update(@ModelAttribute ChannelUpdateRequest request){
         return channelService.update(request);
     }
 
-    @RequestMapping(value = "/delete", method = RequestMethod.POST)
+    @RequestMapping(value = "/delete", method = RequestMethod.DELETE)
     @ResponseBody
     public String delete(@RequestParam UUID channelId){
         channelService.delete(channelId);

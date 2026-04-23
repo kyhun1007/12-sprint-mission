@@ -73,8 +73,8 @@ public class DiscodeitApplication {
 								ReadStatusService readStatusService) {
 		try {
 			System.out.println("========== [1. 데이터 일괄 생성] ==========");
-			BinaryContent b1 = binaryContentService.create(new BinaryContentCreateRequest("kdksadflaflflaslslfafssaasd".getBytes()));
-			BinaryContent b2 = binaryContentService.create(new BinaryContentCreateRequest("kdkasjdkasfaskdasddasdkdkdkdkdasaddasdd".getBytes()));
+			BinaryContent b1 = binaryContentService.create(new BinaryContentCreateRequest("2",".jpg", 120L,"kdksadflaflflaslslfafssaasd".getBytes()));
+			BinaryContent b2 = binaryContentService.create(new BinaryContentCreateRequest("3","img", 2000L,"kdkasjdkasfaskdasddasdkdkdkdkdasaddasdd".getBytes()));
 
 			User u1 = userService.create(new UserCreateRequest("lee", "lee@test.com", "1234", b1.getId()));
 			User u2 = userService.create(new UserCreateRequest("song", "song@test.com", "2345", null));

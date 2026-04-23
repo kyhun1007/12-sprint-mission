@@ -23,13 +23,13 @@ public class MessageController {
         return messageService.create(request);
     }
 
-    @RequestMapping(value = "/update", method = RequestMethod.POST)
+    @RequestMapping(value = "/update", method = RequestMethod.PATCH)
     @ResponseBody
     public MessageDto update(@RequestBody MessageUpdateRequest request){
         return messageService.update(request);
     }
 
-    @RequestMapping(value = "/delete", method = RequestMethod.POST)
+    @RequestMapping(value = "/delete", method = RequestMethod.DELETE)
     @ResponseBody
     public String delete(@RequestParam UUID messageId){
         messageService.delete(messageId);
