@@ -13,7 +13,7 @@ public record BinaryContentResponse(
         return new BinaryContentResponse(
                 entity.getId().toString(),
                 entity.getContentType(),
-                Base64.getEncoder().encodeToString(entity.getContent())
+                Base64.getEncoder().encodeToString(entity.getBytes())
         );
     }
 }

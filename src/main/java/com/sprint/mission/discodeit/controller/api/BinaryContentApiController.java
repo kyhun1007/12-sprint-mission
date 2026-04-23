@@ -3,6 +3,7 @@ package com.sprint.mission.discodeit.controller.api;
 import com.sprint.mission.discodeit.entity.BinaryContent;
 import com.sprint.mission.discodeit.service.BinaryContentService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -20,6 +21,8 @@ public class BinaryContentApiController {
     @RequestMapping(value = "/find", method = RequestMethod.GET)
     public ResponseEntity<BinaryContent> find(@RequestParam UUID binaryContentId) {
         BinaryContent content = binaryContentService.find(binaryContentId);
-        return ResponseEntity.ok(content);
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(content);
     }
 }

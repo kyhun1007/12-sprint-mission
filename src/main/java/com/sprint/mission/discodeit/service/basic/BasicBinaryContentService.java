@@ -36,7 +36,7 @@ public class BasicBinaryContentService implements BinaryContentService {
         return binaryContentRepository.save(new BinaryContent(
                 request.fileName(),
                 request.contentType(),
-                request.fileSize(),
+                (long) request.bytes().length,
                 request.bytes()
         ));
     }
