@@ -40,6 +40,7 @@ public class DiscodeitApplication {
 
     System.out.println("http://localhost:8080/");
     System.out.println("http://localhost:8080/user-list.html");
+    System.out.println("http://localhost:8080/swagger-ui.html");
   }
 
   private static void clearDataFiles() {
