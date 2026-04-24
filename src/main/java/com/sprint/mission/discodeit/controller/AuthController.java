@@ -11,20 +11,21 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 @Controller
-@RequestMapping("/auth")
+@RequestMapping("/api/auth")
 @RequiredArgsConstructor
 public class AuthController {
-    private final AuthService authService;
 
-    @RequestMapping(value = "/login", method = RequestMethod.POST)
-    @ResponseBody
-    public User login(@ModelAttribute AuthRequest authRequest) {
-        User user = null;
-        try {
-            user = authService.login(authRequest);
-        } catch (Exception e) {
-            throw new RuntimeException("로그인 실패: " + e.getMessage());
-        }
-        return user;
+  private final AuthService authService;
+
+  @RequestMapping(value = "login", method = RequestMethod.POST)
+  @ResponseBody
+  public User login(@ModelAttribute AuthRequest authRequest) {
+    User user = null;
+    try {
+      user = authService.login(authRequest);
+    } catch (Exception e) {
+      throw new RuntimeException("로그인 실패: " + e.getMessage());
     }
+    return user;
+  }
 }

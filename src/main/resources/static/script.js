@@ -57,7 +57,8 @@ async function renderUserList(users) {
                 <div class="user-name">${user.username}</div>
                 <div class="user-email">${user.email}</div>
             </div>
-            <div class="status-badge ${user.online ? 'online' : 'offline'}">
+            <div class="status-badge">
+                <span style="color: ${user.online ? '#43b581' : '#747f8d'}">●</span>
                 ${user.online ? '온라인' : '오프라인'}
             </div>
         `;

@@ -19,35 +19,47 @@ import java.util.List;
 import java.util.UUID;
 
 @Controller
-@RequestMapping("/binaryContent")
+@RequestMapping("/api/binaryContent")
 @RequiredArgsConstructor
 public class BinaryContentController {
-    private final BinaryContentService binaryContentService;
 
-    @RequestMapping(value = "/find", method = RequestMethod.GET)
-    public ResponseEntity<List<BinaryContent>> find(@RequestParam(value = "ids") List<UUID> binaryContentIds) {
-        List<BinaryContent> contents = binaryContentIds.stream()
-                .map(binaryContentService::find)
-                .toList();
-        return ResponseEntity.ok(contents);
+  private final BinaryContentService binaryContentService;
+
+  @RequestMapping(value = "/find", method = RequestMethod.GET)
+  public ResponseEntity<BinaryContent> find(@RequestParam UUID binaryContentId) {
+    BinaryContent content = binaryContentService.find(binaryContentId);
+    return ResponseEntity
+        .status(HttpStatus.OK)
+        .body(content);
+  }
+
+  @RequestMapping(value = "/findAll", method = RequestMethod.GET)
+  public ResponseEntity<List<BinaryContent>> findAll(
+      @RequestParam(value = "ids") List<UUID> binaryContentIds) {
+    List<BinaryContent> contents = binaryContentIds.stream()
+        .map(binaryContentService::find)
+        .toList();
+    return ResponseEntity
+        .status(HttpStatus.OK)
+        .body(contents);
+  }
+
+  @RequestMapping(value = "/upload", method = RequestMethod.POST)
+  public ResponseEntity<BinaryContent> upload(@RequestParam("file") MultipartFile file)
+      throws IOException {
+    if (file.isEmpty()) {
+      throw new IllegalArgumentException("업로드된 파일이 없습니다.");
     }
 
-    @RequestMapping(value = "/upload", method = RequestMethod.POST)
-    @ResponseBody
-    public ResponseEntity<BinaryContent> upload(@RequestParam("file") MultipartFile file) throws IOException {
-        if (file.isEmpty()) {
-            throw new IllegalArgumentException("업로드된 파일이 없습니다.");
-        }
+    BinaryContentCreateRequest request = new BinaryContentCreateRequest(
+        file.getOriginalFilename(),
+        file.getContentType(),
+        file.getSize(),
+        file.getBytes()
+    );
 
-        BinaryContentCreateRequest request = new BinaryContentCreateRequest(
-                file.getOriginalFilename(),
-                file.getContentType(),
-                file.getSize(),
-                file.getBytes()
-        );
+    BinaryContent savedContent = binaryContentService.create(request);
 
-        BinaryContent savedContent = binaryContentService.create(request);
-
-        return ResponseEntity.status(HttpStatus.CREATED).body(savedContent);
-    }
+    return ResponseEntity.status(HttpStatus.CREATED).body(savedContent);
+  }
 }
