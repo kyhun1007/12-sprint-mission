@@ -12,35 +12,35 @@ import java.util.List;
 import java.util.UUID;
 
 @Controller
-@RequestMapping("/message")
+@RequestMapping("/api/message")
 @RequiredArgsConstructor
 public class MessageController {
-    private final MessageService messageService;
 
-    @RequestMapping(value = "/", method = RequestMethod.POST)
-    @ResponseBody
-    public MessageDto create(@RequestBody MessageCreateRequest request){
-        return messageService.create(request);
-    }
+  private final MessageService messageService;
 
-    @RequestMapping(value = "/update", method = RequestMethod.PATCH)
-    @ResponseBody
-    public MessageDto update(@RequestBody MessageUpdateRequest request){
-        return messageService.update(request);
-    }
+  @RequestMapping(value = "create", method = RequestMethod.POST)
+  @ResponseBody
+  public MessageDto create(@RequestBody MessageCreateRequest request) {
+    return messageService.create(request);
+  }
 
-    @RequestMapping(value = "/delete", method = RequestMethod.DELETE)
-    @ResponseBody
-    public String delete(@RequestParam UUID messageId){
-        messageService.delete(messageId);
-        return "message deleted : "+ messageId;
-    }
+  @RequestMapping(value = "update", method = RequestMethod.PATCH)
+  @ResponseBody
+  public MessageDto update(@RequestBody MessageUpdateRequest request) {
+    return messageService.update(request);
+  }
 
-    @RequestMapping(value = "/messageList", method = RequestMethod.GET)
-    @ResponseBody
-    public List<MessageDto> getMessageList(@RequestParam UUID channelId){
-        return messageService.findAllByChannelId(channelId);
-    }
+  @RequestMapping(value = "delete", method = RequestMethod.DELETE)
+  @ResponseBody
+  public String delete(@RequestParam UUID messageId) {
+    messageService.delete(messageId);
+    return "message deleted : " + messageId;
+  }
 
+  @RequestMapping(value = "messageList", method = RequestMethod.GET)
+  @ResponseBody
+  public List<MessageDto> getMessageList(@RequestParam UUID channelId) {
+    return messageService.findAllByChannelId(channelId);
+  }
 
 }
