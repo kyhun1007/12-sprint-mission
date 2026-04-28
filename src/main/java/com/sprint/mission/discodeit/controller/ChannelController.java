@@ -1,11 +1,13 @@
 package com.sprint.mission.discodeit.controller;
 
+import com.sprint.mission.discodeit.controller.api.ChannelApi;
 import com.sprint.mission.discodeit.dto.channel.ChannelDto;
 import com.sprint.mission.discodeit.dto.channel.ChannelUpdateRequest;
 import com.sprint.mission.discodeit.dto.channel.PrivateChannelCreateRequest;
 import com.sprint.mission.discodeit.dto.channel.PublicChannelCreateRequest;
 import com.sprint.mission.discodeit.entity.Channel;
 import com.sprint.mission.discodeit.service.ChannelService;
+import java.util.ArrayList;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -17,10 +19,10 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.UUID;
 
-@Controller
+@RestController
 @RequestMapping("/api/channels")
 @RequiredArgsConstructor
-public class ChannelController {
+public class ChannelController implements ChannelApi {
 
   private final ChannelService channelService;
 
@@ -48,6 +50,7 @@ public class ChannelController {
         request.name(),
         request.description()
     );
+
     ChannelDto channel = channelService.update(serviceRequest);
 
     return ResponseEntity
@@ -56,14 +59,14 @@ public class ChannelController {
   }
 
   @DeleteMapping("/{channelId}")
-  public ResponseEntity<Void> delete(@RequestParam UUID channelId) {
+  public ResponseEntity<Void> delete(@PathVariable UUID channelId) {
     channelService.delete(channelId);
     return ResponseEntity.noContent().build();
   }
 
   @GetMapping
-  public List<ChannelDto> find(@RequestParam UUID userId) {
-    return channelService.findAllByUserId(userId);
+  public ResponseEntity<List<ChannelDto>> find(@RequestParam UUID userId) {
+    List<ChannelDto> channelDtos = channelService.findAllByUserId(userId);
+    return ResponseEntity.status(HttpStatus.OK).body(channelDtos);
   }
-
 }

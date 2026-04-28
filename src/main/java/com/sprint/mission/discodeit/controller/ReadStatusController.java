@@ -1,5 +1,6 @@
 package com.sprint.mission.discodeit.controller;
 
+import com.sprint.mission.discodeit.controller.api.ReadStatusApi;
 import com.sprint.mission.discodeit.dto.readstatus.ReadStatusCreateRequest;
 import com.sprint.mission.discodeit.dto.readstatus.ReadStatusDto;
 import com.sprint.mission.discodeit.dto.readstatus.ReadStatusUpdateRequest;
@@ -17,7 +18,7 @@ import java.util.UUID;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/readStatuses")
-public class ReadStatusController {
+public class ReadStatusController implements ReadStatusApi {
 
   private final ReadStatusService readStatusService;
 
@@ -36,11 +37,11 @@ public class ReadStatusController {
   }
 
   // PATCH /api/readStatuses
-  @PatchMapping
-  public ResponseEntity<ReadStatusDto> update(@RequestBody ReadStatusUpdateRequest request) {
-    ReadStatusDto updated = readStatusService.update(request);
-    return ResponseEntity.ok(updated);
-  }
+//  @PatchMapping
+//  public ResponseEntity<ReadStatusDto> update(@RequestBody ReadStatusUpdateRequest request) {
+//    ReadStatusDto updated = readStatusService.update(request);
+//    return ResponseEntity.ok(updated);
+//  }
 
   // "/api/readStatuses/{readStatusId}": {
   //      "patch" 위에랑 똑같은데 호환용으로 위 update 일단 남겨둠

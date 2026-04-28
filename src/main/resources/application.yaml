@@ -10,3 +10,18 @@ discodeit:
   repository:
     type: file # file | jcf
     file-directory: .discodeit
+
+springdoc:
+  api-docs:
+    path: /api-docs
+  swagger-ui:
+    path: /swagger-ui.html
+    operations-sorter: method
+    tags-sorter: alpha
+  group-configs:
+    - group: 'all'
+      paths-to-match: '/api/**'
+  info:
+    title: "sprint 미션 API 명세서"
+    version: "1.0.0"
+    description: "스프린트 미션의 요구 API 명세서입니다"

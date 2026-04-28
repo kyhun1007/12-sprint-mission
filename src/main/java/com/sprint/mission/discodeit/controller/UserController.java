@@ -1,5 +1,6 @@
 package com.sprint.mission.discodeit.controller;
 
+import com.sprint.mission.discodeit.controller.api.UserApi;
 import com.sprint.mission.discodeit.dto.binarycontent.BinaryContentCreateRequest;
 import com.sprint.mission.discodeit.dto.user.UserCreateRequest;
 import com.sprint.mission.discodeit.dto.user.UserDto;
@@ -26,7 +27,7 @@ import org.springframework.web.multipart.MultipartFile;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/users")
-public class UserController {
+public class UserController implements UserApi {
 
   private final UserService userService;
   private final UserStatusService userStatusService;
@@ -111,11 +112,11 @@ public class UserController {
       @RequestBody UserStatusUpdateRequest request
   ) {
     UserStatusUpdateRequest serviceRequest = new UserStatusUpdateRequest(
-        request.userId(),
-        userId
+        userId,
+        request.userId()
     );
 
-    UserStatus status = userStatusService.update(request);
+    UserStatus status = userStatusService.updateByUserId(userId);
     return ResponseEntity.ok(status);
   }
 

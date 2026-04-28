@@ -1,5 +1,6 @@
 package com.sprint.mission.discodeit.controller;
 
+import com.sprint.mission.discodeit.controller.api.MessageApi;
 import com.sprint.mission.discodeit.dto.binarycontent.BinaryContentCreateRequest;
 import com.sprint.mission.discodeit.dto.message.MessageCreateRequest;
 import com.sprint.mission.discodeit.dto.message.MessageDto;
@@ -13,7 +14,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -23,7 +23,7 @@ import org.springframework.web.multipart.MultipartFile;
 @RestController
 @RequestMapping("/api/messages")
 @RequiredArgsConstructor
-public class MessageController {
+public class MessageController implements MessageApi {
 
   private final MessageService messageService;
   private final BinaryContentService binaryContentService;
@@ -70,9 +70,9 @@ public class MessageController {
       @RequestBody MessageUpdateRequest request) {
     MessageUpdateRequest serviceRequest = new MessageUpdateRequest(
         messageId,
-        request.content(),
-        request.attachmentIds()
+        request.content()
     );
+
     return ResponseEntity.ok(messageService.update(serviceRequest));
   }
 

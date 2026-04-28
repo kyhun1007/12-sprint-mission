@@ -10,22 +10,24 @@ import org.springframework.stereotype.Service;
 @Service("basicAuthService")
 @RequiredArgsConstructor
 public class BasicAuthService implements AuthService {
-    private final UserRepository userRepository;
 
-    public User login(AuthRequest authRequest) {
-        if (authRequest.username() == null || authRequest.username().isBlank() ||
-                authRequest.password() == null || authRequest.password().isBlank()) {
-            throw new IllegalArgumentException("Username and password must not be null (login)");
-        }
+  private final UserRepository userRepository;
 
-        User user = userRepository.findByUsername(authRequest.username())
-                .orElseThrow(() -> new IllegalArgumentException("Username not found : " + authRequest.username()));
-
-        if (!user.getPassword().equals(authRequest.password())) {
-            throw new IllegalArgumentException("Wrong password");
-        }
-
-        return user;
+  public User login(AuthRequest authRequest) {
+    if (authRequest.username() == null || authRequest.username().isBlank() ||
+        authRequest.password() == null || authRequest.password().isBlank()) {
+      throw new IllegalArgumentException("Username and password must not be null");
     }
+
+    User user = userRepository.findByUsername(authRequest.username())
+        .orElseThrow(() -> new IllegalArgumentException(
+            "Username " + authRequest.username() + " not found"));
+
+    if (!user.getPassword().equals(authRequest.password())) {
+      throw new IllegalArgumentException("Wrong password");
+    }
+
+    return user;
+  }
 
 }
