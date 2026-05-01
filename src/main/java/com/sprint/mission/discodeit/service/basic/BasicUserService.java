@@ -80,12 +80,16 @@ public class BasicUserService implements UserService {
         .orElseThrow(() -> new NoSuchElementException(
             "User with id " + request.id() + " not found (UserService-update)"));
 
-    if (request.newEmail() != null && userRepository.existsByEmail(request.newEmail())) {
+    // 변경하려는 이메일이 본인의 기존 이메일과 다를 때만 중복 검사 수행
+    if (request.newEmail() != null && !request.newEmail().equals(user.getEmail())
+        && userRepository.existsByEmail(request.newEmail())) {
       throw new IllegalArgumentException(
           "User with Email " + request.newEmail() + " already exists");
     }
 
-    if (request.newUsername() != null && userRepository.existsByUsername(request.newUsername())) {
+    // 변경하려는 유저네임이 본인의 기존 유저네임과 다를 때만 중복 검사 수행
+    if (request.newUsername() != null && !request.newUsername().equals(user.getUsername())
+        && userRepository.existsByUsername(request.newUsername())) {
       throw new IllegalArgumentException(
           "User with Username " + request.newUsername() + " already exists");
     }
