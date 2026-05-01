@@ -16,7 +16,7 @@ public class BasicAuthService implements AuthService {
   public User login(AuthRequest authRequest) {
     if (authRequest.username() == null || authRequest.username().isBlank() ||
         authRequest.password() == null || authRequest.password().isBlank()) {
-      throw new IllegalArgumentException("Username and password must not be null");
+      throw new IllegalArgumentException("Username and newPassword must not be null");
     }
 
     User user = userRepository.findByUsername(authRequest.username())
@@ -24,7 +24,7 @@ public class BasicAuthService implements AuthService {
             "Username " + authRequest.username() + " not found"));
 
     if (!user.getPassword().equals(authRequest.password())) {
-      throw new IllegalArgumentException("Wrong password");
+      throw new IllegalArgumentException("Wrong newPassword");
     }
 
     return user;

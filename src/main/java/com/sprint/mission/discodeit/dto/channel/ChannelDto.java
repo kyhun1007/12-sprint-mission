@@ -12,8 +12,8 @@ public record ChannelDto(
     String name,
     String description,
     ChannelType type,
-    Instant lastTime,
-    List<UUID> users
+    Instant lastMessageAt,
+    List<UUID> participantIds
 ) {
 
   public static ChannelDto from(Channel channel) {

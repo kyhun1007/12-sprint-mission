@@ -35,7 +35,7 @@ public class BinaryContentController implements BinaryContentApi {
     return ResponseEntity.ok(content);
   }
 
-  @GetMapping
+  @GetMapping()
   public ResponseEntity<List<BinaryContent>> findAllByIdIn(
       @RequestParam List<UUID> binaryContentIds) {
     List<BinaryContent> contents = binaryContentIds.stream()

@@ -33,25 +33,27 @@ public class BasicChannelService implements ChannelService {
     Channel channel = new Channel(ChannelType.PUBLIC, request.name(), request.description());
 
     if (channelRepository.findAll().stream().anyMatch(c -> c.getName().equals(request.name()))) {
-      throw new IllegalArgumentException("Channel with name " + request.name() + " already exists");
+      throw new IllegalArgumentException(
+          "Channel with newName " + request.name() + " already exists");
     }
 
     return channelRepository.save(channel);
   }
 
   public Channel createPrivateChannel(PrivateChannelCreateRequest request) {
-    if (request.userIds().size() < 2) {
-      throw new IllegalArgumentException("Private channel must have at least 2 users");
+    if (request.participantIds().size() < 2) {
+      throw new IllegalArgumentException("Private channel must have at least 2 participantIds");
     }
+//
+//    if (channelRepository.findAll().stream().anyMatch(c -> c.getName().equals(request.newName()))) {
+//      throw new IllegalArgumentException(
+//          "Private channel with newName " + request.newName() + " already exists");
+//    }
 
-    if (channelRepository.findAll().stream().anyMatch(c -> c.getName().equals(request.name()))) {
-      throw new IllegalArgumentException(
-          "Private channel with name " + request.name() + " already exists");
-    }
+    //잠시 수정
+    Channel channel = new Channel(ChannelType.PRIVATE, null, null);
 
-    Channel channel = new Channel(ChannelType.PRIVATE, request.name(), null);
-
-    request.userIds().forEach(userId -> {
+    request.participantIds().forEach(userId -> {
       if (!userRepository.existsById(userId)) {
         throw new NoSuchElementException("User with id " + userId + " not found");
       }
@@ -111,7 +113,7 @@ public class BasicChannelService implements ChannelService {
       throw new IllegalArgumentException("Private channel cannot be updated");
     }
 
-    channel.update(request.name(), request.description());
+    channel.update(request.newName(), request.newDescription());
     channelRepository.save(channel);
 
     return find(channel.getId());

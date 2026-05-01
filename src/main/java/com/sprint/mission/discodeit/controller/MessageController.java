@@ -62,8 +62,6 @@ public class MessageController implements MessageApi {
     return ResponseEntity.ok(messageService.findAllByChannelId(channelId));
   }
 
-
-  // 명세에는 없는데 수정 필요, Dto 자체에 id 포함인데 RESTful하게 바꾸려면 파라미터에 id가?
   @PatchMapping("/{messageId}")
   public ResponseEntity<MessageDto> update(
       @PathVariable UUID messageId,
@@ -79,7 +77,7 @@ public class MessageController implements MessageApi {
   @DeleteMapping("/{messageId}")
   public ResponseEntity<String> delete(@PathVariable UUID messageId) {
     messageService.delete(messageId);
-    return ResponseEntity.ok("message deleted : " + messageId);
+    return ResponseEntity.noContent().build();
   }
 
   public UUID upload(MultipartFile file) throws IOException {

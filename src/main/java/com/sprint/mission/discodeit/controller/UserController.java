@@ -17,7 +17,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -33,11 +32,14 @@ public class UserController implements UserApi {
   private final UserStatusService userStatusService;
   private final BinaryContentService binaryContentService;
 
-  @PostMapping(value = "create", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
+  @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
   public ResponseEntity<User> create(
-      @RequestPart UserCreateRequest request,
+      @RequestPart(value = "userCreateRequest") UserCreateRequest request,
       @RequestPart(value = "profile", required = false) MultipartFile profile
   ) {
+//    System.out.println(request.newEmail() + "\n"
+//        + request.profileImageId() + "\n"
+//        + profile);
     UUID profileId = request.profileImageId();
 
     if (profile != null && profileId == null) {
@@ -47,6 +49,8 @@ public class UserController implements UserApi {
         throw new RuntimeException("프로필 업로드 실패: " + e.getMessage());
       }
     }
+
+//    System.out.println(profileId);
 
     UserCreateRequest serviceRequest = new UserCreateRequest(
         request.username(),
@@ -59,7 +63,7 @@ public class UserController implements UserApi {
     return ResponseEntity.status(HttpStatus.CREATED).body(user);
   }
 
-  // PATCH /api/users/{userId}
+  // PATCH /api/participantIds/{userId}
   @PatchMapping(value = "/{userId}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
   public ResponseEntity<UserDto> update(
       @PathVariable UUID userId,
@@ -78,9 +82,9 @@ public class UserController implements UserApi {
 
     UserUpdateRequest serviceRequest = new UserUpdateRequest(
         userId,
-        request.username(),
-        request.email(),
-        request.password(),
+        request.newUsername(),
+        request.newEmail(),
+        request.newPassword(),
         profileId
     );
 
@@ -89,7 +93,7 @@ public class UserController implements UserApi {
     return ResponseEntity.ok(updatedUser);
   }
 
-  // DELETE /api/users/{userId}
+  // DELETE /api/participantIds/{userId}
   @DeleteMapping("/{userId}")
   public ResponseEntity<Void> delete(@PathVariable UUID userId) {
     userService.delete(userId);
@@ -97,7 +101,7 @@ public class UserController implements UserApi {
   }
 
   // 나중에 수정
-  @RequestMapping(value = "findAll", method = RequestMethod.GET)
+  @GetMapping
   public ResponseEntity<List<UserDto>> findAll() {
     List<UserDto> users = userService.findAll();
     return ResponseEntity
@@ -105,18 +109,13 @@ public class UserController implements UserApi {
         .body(users);
   }
 
-  // PATCH /api/users/{userId}/userStatus
+  // PATCH /api/participantIds/{userId}/userStatus
   @PatchMapping("/{userId}/userStatus")
   public ResponseEntity<UserStatus> updateUserStatus(
       @PathVariable UUID userId,
       @RequestBody UserStatusUpdateRequest request
   ) {
-    UserStatusUpdateRequest serviceRequest = new UserStatusUpdateRequest(
-        userId,
-        request.userId()
-    );
-
-    UserStatus status = userStatusService.updateByUserId(userId);
+    UserStatus status = userStatusService.updateByUserId(userId, request);
     return ResponseEntity.ok(status);
   }
 

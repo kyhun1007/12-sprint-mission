@@ -7,13 +7,9 @@ import com.sprint.mission.discodeit.dto.channel.PrivateChannelCreateRequest;
 import com.sprint.mission.discodeit.dto.channel.PublicChannelCreateRequest;
 import com.sprint.mission.discodeit.entity.Channel;
 import com.sprint.mission.discodeit.service.ChannelService;
-import java.util.ArrayList;
-import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
-import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -47,8 +43,8 @@ public class ChannelController implements ChannelApi {
   ) {
     ChannelUpdateRequest serviceRequest = new ChannelUpdateRequest(
         channelId,
-        request.name(),
-        request.description()
+        request.newName(),
+        request.newDescription()
     );
 
     ChannelDto channel = channelService.update(serviceRequest);

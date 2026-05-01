@@ -33,7 +33,7 @@ public class DiscodeitApplication {
     UserStatusService userStatusService = context.getBean(UserStatusService.class);
     ReadStatusService readStatusService = context.getBean(ReadStatusService.class);
 
-//		clearDataFiles();
+    clearDataFiles();
 
     runTest(userService, channelService, messageService,
         binaryContentService, userStatusService, readStatusService);

@@ -37,7 +37,29 @@
     }
   ],
   "paths": {
-    "/api/users/create": {
+    "/api/users": {
+      "get": {
+        "tags": [
+          "User"
+        ],
+        "summary": "모든 User 조회",
+        "operationId": "findAll",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/UserDto"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
       "post": {
         "tags": [
           "User"
@@ -50,7 +72,7 @@
               "schema": {
                 "type": "object",
                 "properties": {
-                  "request": {
+                  "userCreateRequest": {
                     "$ref": "#/components/schemas/UserCreateRequest"
                   },
                   "profile": {
@@ -59,7 +81,7 @@
                   }
                 },
                 "required": [
-                  "request"
+                  "userCreateRequest"
                 ]
               }
             }
@@ -105,7 +127,7 @@
                 "schema": {
                   "type": "array",
                   "items": {
-                    "$ref": "#/components/schemas/ReadStatusDto"
+                    "$ref": "#/components/schemas/ReadStatus"
                   }
                 }
               }
@@ -135,7 +157,7 @@
             "content": {
               "*/*": {
                 "schema": {
-                  "$ref": "#/components/schemas/ReadStatusDto"
+                  "$ref": "#/components/schemas/ReadStatus"
                 }
               }
             }
@@ -284,42 +306,6 @@
       }
     },
     "/api/binaryContents": {
-      "get": {
-        "tags": [
-          "BinaryContent"
-        ],
-        "summary": "여러 첨부 파일 조회",
-        "operationId": "findAllByIdIn",
-        "parameters": [
-          {
-            "name": "binaryContentIds",
-            "in": "query",
-            "required": true,
-            "schema": {
-              "type": "array",
-              "items": {
-                "type": "string",
-                "format": "uuid"
-              }
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK",
-            "content": {
-              "*/*": {
-                "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/BinaryContent"
-                  }
-                }
-              }
-            }
-          }
-        }
-      },
       "post": {
         "tags": [
           "BinaryContent"
@@ -541,7 +527,7 @@
             "content": {
               "*/*": {
                 "schema": {
-                  "$ref": "#/components/schemas/ReadStatusDto"
+                  "$ref": "#/components/schemas/ReadStatus"
                 }
               }
             }
@@ -631,7 +617,7 @@
         "parameters": [
           {
             "name": "channelId",
-            "in": "query",
+            "in": "path",
             "required": true,
             "schema": {
               "type": "string",
@@ -679,30 +665,6 @@
               "*/*": {
                 "schema": {
                   "$ref": "#/components/schemas/ChannelDto"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/api/users/findAll": {
-      "get": {
-        "tags": [
-          "User"
-        ],
-        "summary": "모든 User 조회",
-        "operationId": "findAll",
-        "responses": {
-          "200": {
-            "description": "OK",
-            "content": {
-              "*/*": {
-                "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/UserDto"
-                  }
                 }
               }
             }
@@ -776,6 +738,44 @@
           }
         }
       }
+    },
+    "/api/binaryContents/findAllByIdIn": {
+      "get": {
+        "tags": [
+          "BinaryContent"
+        ],
+        "summary": "여러 첨부 파일 조회",
+        "operationId": "findAllByIdIn",
+        "parameters": [
+          {
+            "name": "binaryContentIds",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "format": "uuid"
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/BinaryContent"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
     }
   },
   "components": {
@@ -838,10 +838,14 @@
           "channelId": {
             "type": "string",
             "format": "uuid"
+          },
+          "lastReadAt": {
+            "type": "string",
+            "format": "date-time"
           }
         }
       },
-      "ReadStatusDto": {
+      "ReadStatus": {
         "type": "object",
         "properties": {
           "id": {
@@ -861,6 +865,10 @@
             "format": "date-time"
           },
           "updatedAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "lastReadAt": {
             "type": "string",
             "format": "date-time"
           }
@@ -964,10 +972,7 @@
       "PrivateChannelCreateRequest": {
         "type": "object",
         "properties": {
-          "name": {
-            "type": "string"
-          },
-          "userIds": {
+          "participantIds": {
             "type": "array",
             "items": {
               "type": "string",
@@ -1069,13 +1074,9 @@
       "UserStatusUpdateRequest": {
         "type": "object",
         "properties": {
-          "id": {
+          "newLastActiveAt": {
             "type": "string",
-            "format": "uuid"
-          },
-          "userId": {
-            "type": "string",
-            "format": "uuid"
+            "format": "date-time"
           }
         }
       },
@@ -1098,6 +1099,10 @@
             "type": "string",
             "format": "date-time"
           },
+          "lastActiveAt": {
+            "type": "string",
+            "format": "date-time"
+          },
           "userOnline": {
             "type": "boolean"
           }
@@ -1106,17 +1111,9 @@
       "ReadStatusUpdateRequest": {
         "type": "object",
         "properties": {
-          "id": {
+          "newLastReadAt": {
             "type": "string",
-            "format": "uuid"
-          },
-          "userId": {
-            "type": "string",
-            "format": "uuid"
-          },
-          "channelId": {
-            "type": "string",
-            "format": "uuid"
+            "format": "date-time"
           }
         }
       },
@@ -1129,13 +1126,6 @@
           },
           "content": {
             "type": "string"
-          },
-          "attachmentIds": {
-            "type": "array",
-            "items": {
-              "type": "string",
-              "format": "uuid"
-            }
           }
         }
       },

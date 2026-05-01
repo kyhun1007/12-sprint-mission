@@ -16,57 +16,53 @@ import java.util.UUID;
 @Service("userStatusService")
 @RequiredArgsConstructor
 public class BasicUserStatusService implements UserStatusService {
-    private final UserStatusRepository userStatusRepository;
-    private final UserRepository userRepository;
 
-    @Override
-    public UserStatus create(UserStatusCreateRequest request) {
-        User user = userRepository.findById(request.userId())
-                .orElseThrow(() -> new IllegalArgumentException("User with id " + request.userId() + " not found (UserStatusService-create)"));
+  private final UserStatusRepository userStatusRepository;
+  private final UserRepository userRepository;
 
-        if (userStatusRepository.findByUserId(user.getId()).isPresent()) {
-            throw new IllegalArgumentException("UserStatus for user id " + request.userId() + " already exists (UserStatusService-create)");
-        }
+  @Override
+  public UserStatus create(UserStatusCreateRequest request) {
+    User user = userRepository.findById(request.userId())
+        .orElseThrow(() -> new IllegalArgumentException(
+            "User with id " + request.userId() + " not found (UserStatusService-create)"));
 
-        return userStatusRepository.save(new UserStatus(user.getId()));
+    if (userStatusRepository.findByUserId(user.getId()).isPresent()) {
+      throw new IllegalArgumentException("UserStatus for user id " + request.userId()
+          + " already exists (UserStatusService-create)");
     }
 
-    @Override
-    public UserStatus find(UUID id) {
-        return userStatusRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("UserStatus with id " + id + " not found (UserStatusService-find)"));
-    }
+    return userStatusRepository.save(new UserStatus(user.getId(), request.lastActiveAt()));
+  }
 
-    @Override
-    public List<UserStatus> findAll() {
-        return userStatusRepository.findAll();
-    }
+  @Override
+  public UserStatus find(UUID id) {
+    return userStatusRepository.findById(id)
+        .orElseThrow(() -> new IllegalArgumentException(
+            "UserStatus with id " + id + " not found (UserStatusService-find)"));
+  }
 
-    @Override
-    public UserStatus update(UserStatusUpdateRequest request) {
-        UserStatus userStatus = userStatusRepository.findById(request.id())
-                .orElseThrow(() -> new IllegalArgumentException("UserStatus with id " + request.id() + " not found (UserStatusService-update)"));
+  @Override
+  public List<UserStatus> findAll() {
+    return userStatusRepository.findAll();
+  }
 
-        userStatus.updateTimestamp();
+  @Override
+  public UserStatus updateByUserId(UUID userId, UserStatusUpdateRequest request) {
+    UserStatus userStatus = userStatusRepository.findByUserId(userId)
+        .orElseThrow(() -> new IllegalArgumentException(
+            "UserStatus for user id " + userId + " not found (UserStatusService-updateByUserId)"));
 
-        return userStatusRepository.save(userStatus);
-    }
+    userStatus.updateTimestamp(request.newLastActiveAt());
 
-    @Override
-    public UserStatus updateByUserId(UUID userId) {
-        UserStatus userStatus = userStatusRepository.findByUserId(userId)
-                .orElseThrow(() -> new IllegalArgumentException("UserStatus for user id " + userId + " not found (UserStatusService-updateByUserId)"));
+    return userStatusRepository.save(userStatus);
+  }
 
-        userStatus.updateTimestamp();
+  @Override
+  public void delete(UUID id) {
+    UserStatus userStatus = userStatusRepository.findById(id)
+        .orElseThrow(() -> new IllegalArgumentException(
+            "UserStatus with id " + id + " not found (UserStatusService-delete)"));
 
-        return userStatusRepository.save(userStatus);
-    }
-
-    @Override
-    public void delete(UUID id) {
-        UserStatus userStatus = userStatusRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("UserStatus with id " + id + " not found (UserStatusService-delete)"));
-
-        userStatusRepository.delete(userStatus.getId());
-    }
+    userStatusRepository.delete(userStatus.getId());
+  }
 }
