@@ -80,6 +80,12 @@ public class UserController implements UserApi {
       }
     }
 
+    System.out.println(userId +
+        request.newUsername() +
+        request.newEmail() +
+        request.newPassword() +
+        profileId);
+
     UserUpdateRequest serviceRequest = new UserUpdateRequest(
         userId,
         request.newUsername(),
@@ -98,6 +104,12 @@ public class UserController implements UserApi {
   public ResponseEntity<Void> delete(@PathVariable UUID userId) {
     userService.delete(userId);
     return ResponseEntity.noContent().build(); // 204 No Content
+  }
+
+  @GetMapping("/{userId}")
+  public ResponseEntity<UserDto> find(@PathVariable UUID userId) {
+    UserDto user = userService.find(userId);
+    return ResponseEntity.status(HttpStatus.OK).body(user); // 204 No Content
   }
 
   // 나중에 수정

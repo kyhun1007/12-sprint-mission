@@ -39,7 +39,7 @@ public class BasicUserService implements UserService {
     }
 
     User user = request.toUser();
-    UserStatus status = new UserStatus(user.getId(), Instant.now());
+    UserStatus status = new UserStatus(user.getId(), Instant.MIN);
     userStatusRepository.save(status);
 
     return userRepository.save(user);
@@ -101,10 +101,10 @@ public class BasicUserService implements UserService {
     }
 
     user.update(
-        request.newUsername(),
-        request.newEmail(),
-        request.newPassword(),
-        request.profileImageId()
+        request.newUsername() != null ? request.newUsername() : user.getUsername(),
+        request.newEmail() != null ? request.newEmail() : user.getEmail(),
+        request.newPassword() != null ? request.newPassword() : user.getPassword(),
+        request.profileImageId() != null ? request.profileImageId() : user.getProfileId()
     );
 
     userRepository.save(user);

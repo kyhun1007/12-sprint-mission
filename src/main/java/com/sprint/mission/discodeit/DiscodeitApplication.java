@@ -76,17 +76,11 @@ public class DiscodeitApplication {
       ReadStatusService readStatusService) {
     try {
       System.out.println("========== [1. 데이터 일괄 생성] ==========");
-      BinaryContent b1 = binaryContentService.create(
-          new BinaryContentCreateRequest("2", ".jpg", 120L,
-              "kdksadflaflflaslslfafssaasd".getBytes()));
-      BinaryContent b2 = binaryContentService.create(
-          new BinaryContentCreateRequest("3", "img", 2000L,
-              "kdkasjdkasfaskdasddasdkdkdkdkdasaddasdd".getBytes()));
 
       User u1 = userService.create(
-          new UserCreateRequest("lee", "lee@test.com", "1234", b1.getId()));
-      User u2 = userService.create(new UserCreateRequest("song", "song@test.com", "2345", null));
-      User u3 = userService.create(new UserCreateRequest("kim", "kim@test.com", "3456", null));
+          new UserCreateRequest("lee", "lee@test.com", "1234", null));
+      User u2 = userService.create(new UserCreateRequest("song", "song@test.com", "1234", null));
+      User u3 = userService.create(new UserCreateRequest("kim", "kim@test.com", "1234", null));
 
       Channel c1 = channelService.createPublicChannel(
           new PublicChannelCreateRequest("자바기초", "자바 기본 문법 공부방"));
@@ -96,8 +90,8 @@ public class DiscodeitApplication {
       System.out.println("유저/채널 생성 완료 (유저: " + userService.findAll().size() + ", 채널: "
           + channelService.findAllByUserId(u1.getId()).size() + ")");
 
-      messageService.create(new MessageCreateRequest(c1.getId(), u1.getId(), "안녕하세요, 자바 공부 시작합니다!",
-          List.of(b2.getId())));
+      messageService.create(
+          new MessageCreateRequest(c1.getId(), u1.getId(), "안녕하세요, 자바 공부 시작합니다!", null));
       messageService.create(new MessageCreateRequest(c1.getId(), u2.getId(), "반가워요 경훈님!", null));
       messageService.create(new MessageCreateRequest(c1.getId(), u3.getId(), "저도 같이 공부해요.", null));
       messageService.create(
