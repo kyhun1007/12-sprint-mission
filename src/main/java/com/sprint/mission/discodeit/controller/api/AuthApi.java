@@ -1,6 +1,6 @@
 package com.sprint.mission.discodeit.controller.api;
 
-import com.sprint.mission.discodeit.dto.AuthRequest;
+import com.sprint.mission.discodeit.dto.LoginRequest;
 import com.sprint.mission.discodeit.entity.User;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -13,5 +13,5 @@ public interface AuthApi {
 
   @Operation(summary = "로그인")
   @PostMapping("login")
-  ResponseEntity<User> login(@RequestBody AuthRequest authRequest);
+  ResponseEntity<User> login(@RequestBody LoginRequest loginRequest);
 }

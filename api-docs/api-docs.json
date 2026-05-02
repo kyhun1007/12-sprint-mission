@@ -306,6 +306,42 @@
       }
     },
     "/api/binaryContents": {
+      "get": {
+        "tags": [
+          "BinaryContent"
+        ],
+        "summary": "여러 첨부 파일 조회",
+        "operationId": "findAllByIdIn",
+        "parameters": [
+          {
+            "name": "binaryContentIds",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "format": "uuid"
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/BinaryContent"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
       "post": {
         "tags": [
           "BinaryContent"
@@ -355,7 +391,7 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/AuthRequest"
+                "$ref": "#/components/schemas/LoginRequest"
               }
             }
           },
@@ -376,6 +412,35 @@
       }
     },
     "/api/users/{userId}": {
+      "get": {
+        "tags": [
+          "User"
+        ],
+        "operationId": "find",
+        "parameters": [
+          {
+            "name": "userId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserDto"
+                }
+              }
+            }
+          }
+        }
+      },
       "delete": {
         "tags": [
           "User"
@@ -678,7 +743,7 @@
           "Channel"
         ],
         "summary": "User의 Channel 목록 조회",
-        "operationId": "find",
+        "operationId": "find_1",
         "parameters": [
           {
             "name": "userId",
@@ -713,7 +778,7 @@
           "BinaryContent"
         ],
         "summary": "첨부 파일 조회",
-        "operationId": "find_1",
+        "operationId": "find_2",
         "parameters": [
           {
             "name": "binaryContentId",
@@ -732,44 +797,6 @@
               "*/*": {
                 "schema": {
                   "$ref": "#/components/schemas/BinaryContent"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/api/binaryContents/findAllByIdIn": {
-      "get": {
-        "tags": [
-          "BinaryContent"
-        ],
-        "summary": "여러 첨부 파일 조회",
-        "operationId": "findAllByIdIn",
-        "parameters": [
-          {
-            "name": "binaryContentIds",
-            "in": "query",
-            "required": true,
-            "schema": {
-              "type": "array",
-              "items": {
-                "type": "string",
-                "format": "uuid"
-              }
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK",
-            "content": {
-              "*/*": {
-                "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/BinaryContent"
-                  }
                 }
               }
             }
@@ -1002,13 +1029,13 @@
           "contentType": {
             "type": "string"
           },
-          "fileSize": {
+          "size": {
             "type": "integer",
             "format": "int64"
           }
         }
       },
-      "AuthRequest": {
+      "LoginRequest": {
         "type": "object",
         "properties": {
           "username": {
@@ -1026,13 +1053,13 @@
             "type": "string",
             "format": "uuid"
           },
-          "username": {
+          "newUsername": {
             "type": "string"
           },
-          "email": {
+          "newEmail": {
             "type": "string"
           },
-          "password": {
+          "newPassword": {
             "type": "string"
           },
           "profileImageId": {
@@ -1136,10 +1163,10 @@
             "type": "string",
             "format": "uuid"
           },
-          "name": {
+          "newName": {
             "type": "string"
           },
-          "description": {
+          "newDescription": {
             "type": "string"
           }
         }
@@ -1164,11 +1191,11 @@
               "PRIVATE"
             ]
           },
-          "lastTime": {
+          "lastMessageAt": {
             "type": "string",
             "format": "date-time"
           },
-          "users": {
+          "participantIds": {
             "type": "array",
             "items": {
               "type": "string",
