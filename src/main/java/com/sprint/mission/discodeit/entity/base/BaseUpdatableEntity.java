@@ -11,7 +11,7 @@ import org.springframework.data.annotation.LastModifiedDate;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @MappedSuperclass
-public class BaseUpdatableEntity extends BaseEntity {
+public abstract class BaseUpdatableEntity extends BaseEntity {
 
   @LastModifiedDate
   @Column(columnDefinition = "timestamp with time zone")

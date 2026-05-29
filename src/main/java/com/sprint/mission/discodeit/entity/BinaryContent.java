@@ -6,10 +6,6 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.Table;
 import lombok.AccessLevel;
 import lombok.Getter;
-
-import java.io.Serializable;
-import java.time.Instant;
-import java.util.UUID;
 import lombok.NoArgsConstructor;
 
 @Entity
@@ -18,7 +14,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class BinaryContent extends BaseEntity {
 
-  @Column(length = 255, nullable = false)
+  @Column(nullable = false)
   private String fileName;
   @Column(nullable = false)
   private Long size;
