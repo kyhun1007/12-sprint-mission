@@ -7,6 +7,8 @@ import com.sprint.mission.discodeit.dto.request.UserUpdateRequest;
 import com.sprint.mission.discodeit.entity.BinaryContent;
 import com.sprint.mission.discodeit.entity.User;
 import com.sprint.mission.discodeit.entity.UserStatus;
+import com.sprint.mission.discodeit.exception.user.UserAlreadyExistsException;
+import com.sprint.mission.discodeit.exception.user.UserNotFoundException;
 import com.sprint.mission.discodeit.mapper.UserMapper;
 import com.sprint.mission.discodeit.repository.BinaryContentRepository;
 import com.sprint.mission.discodeit.repository.UserRepository;
@@ -104,20 +106,17 @@ public class BasicUserService implements UserService {
   public UserDto update(UUID userId, UserUpdateRequest userUpdateRequest,
       Optional<BinaryContentCreateRequest> optionalProfileCreateRequest) {
     User user = userRepository.findById(userId)
-        .orElseThrow(() -> {
-          log.warn("사용자 정보 수정 실패: 존재하지 않는 ID - ID: {}", userId);
-          return new NoSuchElementException("User with id " + userId + " not found");
-        });
+        .orElseThrow(() ->
+            UserNotFoundException.withId(userId)
+        );
 
     String newUsername = userUpdateRequest.newUsername();
     String newEmail = userUpdateRequest.newEmail();
     if (userRepository.existsByEmail(newEmail)) {
-      log.warn("사용자 정보 수정 거부: 중복된 이메일 요청 - ID: {}, RequestedEmail: {}", userId, newEmail);
-      throw new IllegalArgumentException("User with email " + newEmail + " already exists");
+      throw UserAlreadyExistsException.withEmail(newEmail);
     }
     if (userRepository.existsByUsername(newUsername)) {
-      log.warn("사용자 정보 수정 거부: 중복된 이름 요청 - ID: {}, RequestedUsername: {}", userId, newUsername);
-      throw new IllegalArgumentException("User with username " + newUsername + " already exists");
+      throw UserAlreadyExistsException.withUsername(newUsername);
     }
 
     BinaryContent nullableProfile = optionalProfileCreateRequest
@@ -148,8 +147,7 @@ public class BasicUserService implements UserService {
   @Override
   public void delete(UUID userId) {
     if (userRepository.existsById(userId)) {
-      log.warn("사용자 탈퇴 실패: 존재하지 않는 ID - ID: {}", userId);
-      throw new NoSuchElementException("User with id " + userId + " not found");
+      throw UserNotFoundException.withId(userId);
     }
 
     userRepository.deleteById(userId);
