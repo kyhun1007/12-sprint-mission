@@ -6,4 +6,12 @@ public record UserCreateRequest(
     String password
 ) {
 
+  @Override
+  public String toString() {
+    return "UserCreateRequest{" +
+        "email='" + email + '\'' +
+        "username='" + username + '\'' +
+        ", password='[PROTECTED]'" +
+        '}';
+  }
 }

@@ -13,15 +13,18 @@ import com.sprint.mission.discodeit.repository.MessageRepository;
 import com.sprint.mission.discodeit.repository.ReadStatusRepository;
 import com.sprint.mission.discodeit.repository.UserRepository;
 import com.sprint.mission.discodeit.service.ChannelService;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @RequiredArgsConstructor
 @Service
+@Slf4j
 public class BasicChannelService implements ChannelService {
 
   private final ChannelRepository channelRepository;
@@ -39,6 +42,8 @@ public class BasicChannelService implements ChannelService {
     Channel channel = new Channel(ChannelType.PUBLIC, name, description);
 
     channelRepository.save(channel);
+
+    log.info("공개 채널 생성 완료 - ID: {}, 이름: {}", channel.getId(), name);
     return channelMapper.toDto(channel);
   }
 
@@ -48,11 +53,14 @@ public class BasicChannelService implements ChannelService {
     Channel channel = new Channel(ChannelType.PRIVATE, null, null);
     channelRepository.save(channel);
 
+    log.debug("비공개 채널 생성 시도 - 채널 ID: {}", channel.getId());
+
     List<ReadStatus> readStatuses = userRepository.findAllById(request.participantIds()).stream()
         .map(user -> new ReadStatus(user, channel, channel.getCreatedAt()))
         .toList();
     readStatusRepository.saveAll(readStatuses);
 
+    log.info("비공개 채널 생성 완료 - ID: {}, 참여자 수: {}", channel.getId(), readStatuses.size());
     return channelMapper.toDto(channel);
   }
 
@@ -62,16 +70,27 @@ public class BasicChannelService implements ChannelService {
     return channelRepository.findById(channelId)
         .map(channelMapper::toDto)
         .orElseThrow(
-            () -> new NoSuchElementException("Channel with id " + channelId + " not found"));
+            () -> {
+              log.warn("채널 조회 실패: 존재하지 않는 ID - ID: {}", channelId);
+              return new NoSuchElementException("Channel with id " + channelId + " not found");
+            });
   }
 
   @Transactional(readOnly = true)
   @Override
   public List<ChannelDto> findAllByUserId(UUID userId) {
+    if (userId == null) {
+      log.debug("채널 다건 조회 요청 무산 - User ID가 null입니다.");
+      return new ArrayList<>();
+    }
+
     List<UUID> mySubscribedChannelIds = readStatusRepository.findAllByUserId(userId).stream()
         .map(ReadStatus::getChannel)
         .map(Channel::getId)
         .toList();
+
+    log.debug("사용자 채널 목록 조회 - User ID: {}, 구독 중인 비공개 채널 수: {}", userId,
+        mySubscribedChannelIds.size());
 
     return channelRepository.findAllByTypeOrIdIn(ChannelType.PUBLIC, mySubscribedChannelIds)
         .stream()
@@ -86,11 +105,16 @@ public class BasicChannelService implements ChannelService {
     String newDescription = request.newDescription();
     Channel channel = channelRepository.findById(channelId)
         .orElseThrow(
-            () -> new NoSuchElementException("Channel with id " + channelId + " not found"));
+            () -> {
+              log.warn("채널 수정 실패: 존재하지 않는 ID - ID: {}", channelId);
+              return new NoSuchElementException("Channel with id " + channelId + " not found");
+            });
     if (channel.getType().equals(ChannelType.PRIVATE)) {
+      log.warn("채널 수정 거부: 비공개 채널은 수정할 수 없습니다. - ID: {}", channelId);
       throw new IllegalArgumentException("Private channel cannot be updated");
     }
     channel.update(newName, newDescription);
+    log.info("채널 정보 수정 완료 - ID: {}, 새로운 이름: {}", channelId, newName);
     return channelMapper.toDto(channel);
   }
 
@@ -98,12 +122,15 @@ public class BasicChannelService implements ChannelService {
   @Override
   public void delete(UUID channelId) {
     if (!channelRepository.existsById(channelId)) {
+      log.warn("채널 삭제 실패: 존재하지 않는 ID - ID: {}", channelId);
       throw new NoSuchElementException("Channel with id " + channelId + " not found");
     }
 
+    log.debug("채널 하위 데이터 일괄 삭제 시작 - 채널 ID: {}", channelId);
     messageRepository.deleteAllByChannelId(channelId);
     readStatusRepository.deleteAllByChannelId(channelId);
 
     channelRepository.deleteById(channelId);
+    log.info("채널 및 하위 데이터 전체 삭제 완료 - ID: {}", channelId);
   }
 }
