@@ -20,11 +20,10 @@ spring:
 
 logging:
   level:
-    root: info
     com.codeit.discodeit: debug
     org.springframework.web: trace
     org.springframework.web.filter.CommonsRequestLoggingFilter: DEBUG
 
     # SQL 로그 보기 위해 설정했던 레벨 유지 (dev 환경)
     org.hibernate.SQL: off
-    org.hibernate.orm.jdbc.bind: trace
+    org.hibernate.orm.jdbc.bind: info

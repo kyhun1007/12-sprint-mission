@@ -19,7 +19,6 @@ spring:
 
 logging:
   level:
-    root: info
     com.codeit.discodeit: info
     org.springframework.web: info
 

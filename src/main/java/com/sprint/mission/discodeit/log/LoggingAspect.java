@@ -20,18 +20,18 @@ public class LoggingAspect {
     String className = joinPoint.getTarget().getClass().getName();
     String methodName = joinPoint.getSignature().getName();
 
-    log.info("[START] {}.{}() | Args: {}", className, methodName,
+    log.debug("[START] {}.{}() | Args: {}", className, methodName,
         Arrays.toString(joinPoint.getArgs()));
 
     try {
-      Objects result = (Objects) joinPoint.proceed();
+      Object result = joinPoint.proceed();
       long excutionTime = System.currentTimeMillis() - start;
-      log.info("[END] {}.{}() | Taken: {} ms", className, methodName, excutionTime);
+      log.debug("[END] {}.{}() | Taken: {} ms", className, methodName, excutionTime);
       return result;
     } catch (Throwable e) {
       long excutionTime = System.currentTimeMillis() - start;
       log.error("[FAIL] {}.{}() | Exception: {} | Taken: {} ms", className, methodName,
-          excutionTime, e.getMessage());
+          e.getMessage(), excutionTime, e);
       throw e;
     }
   }
