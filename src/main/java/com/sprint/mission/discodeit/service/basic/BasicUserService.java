@@ -44,12 +44,10 @@ public class BasicUserService implements UserService {
     String email = userCreateRequest.email();
 
     if (userRepository.existsByEmail(email)) {
-      log.warn("회원가입 실패: 중복된 이메일 - Email: {}", email);
-      throw new IllegalArgumentException("User with email " + email + " already exists");
+      throw UserAlreadyExistsException.withEmail(email);
     }
     if (userRepository.existsByUsername(username)) {
-      log.warn("회원가입 실패: 중복된 사용자 이름 - Username: {}", username);
-      throw new IllegalArgumentException("User with username " + username + " already exists");
+      throw UserAlreadyExistsException.withUsername(username);
     }
 
     BinaryContent nullableProfile = optionalProfileCreateRequest
@@ -74,6 +72,7 @@ public class BasicUserService implements UserService {
     UserStatus userStatus = new UserStatus(user, now);
 
     userRepository.save(user);
+    userStatusRepository.save(userStatus);
 
     log.info("신규 회원가입 완료 - ID: {}, Username: {}, Email: {}, 프로필 첨부 여부: {}",
         user.getId(), username, email, (nullableProfile != null));
@@ -146,7 +145,7 @@ public class BasicUserService implements UserService {
   @Transactional
   @Override
   public void delete(UUID userId) {
-    if (userRepository.existsById(userId)) {
+    if (!userRepository.existsById(userId)) {
       throw UserNotFoundException.withId(userId);
     }
 
