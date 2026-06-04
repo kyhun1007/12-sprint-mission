@@ -78,11 +78,6 @@ public class BasicChannelService implements ChannelService {
   @Transactional(readOnly = true)
   @Override
   public List<ChannelDto> findAllByUserId(UUID userId) {
-    if (userId == null) {
-      log.debug("채널 다건 조회 요청 무산 - User ID가 null입니다.");
-      return new ArrayList<>();
-    }
-
     List<UUID> mySubscribedChannelIds = readStatusRepository.findAllByUserId(userId).stream()
         .map(ReadStatus::getChannel)
         .map(Channel::getId)

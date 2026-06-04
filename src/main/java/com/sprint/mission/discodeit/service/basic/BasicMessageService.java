@@ -9,6 +9,8 @@ import com.sprint.mission.discodeit.entity.BinaryContent;
 import com.sprint.mission.discodeit.entity.Channel;
 import com.sprint.mission.discodeit.entity.Message;
 import com.sprint.mission.discodeit.entity.User;
+import com.sprint.mission.discodeit.exception.channel.ChannelNotFoundException;
+import com.sprint.mission.discodeit.exception.user.UserNotFoundException;
 import com.sprint.mission.discodeit.mapper.MessageMapper;
 import com.sprint.mission.discodeit.mapper.PageResponseMapper;
 import com.sprint.mission.discodeit.repository.BinaryContentRepository;
@@ -51,18 +53,9 @@ public class BasicMessageService implements MessageService {
     UUID authorId = messageCreateRequest.authorId();
 
     Channel channel = channelRepository.findById(channelId)
-        .orElseThrow(
-            () -> {
-              log.warn("메시지 생성 실패: 존재하지 않는 채널 ID - ChannelId: {}", channelId);
-              return new NoSuchElementException("Channel with id " + channelId + " does not exist");
-            });
+        .orElseThrow(() -> ChannelNotFoundException.withId(channelId));
     User author = userRepository.findById(authorId)
-        .orElseThrow(
-            () -> {
-              log.warn("메시지 생성 실패: 존재하지 않는 작성자 ID - AuthorId: {}", authorId);
-              return new NoSuchElementException("Author with id " + authorId + " does not exist");
-            }
-        );
+        .orElseThrow(() -> UserNotFoundException.withId(authorId));
 
     log.debug("메시지 첨부파일 저장 시작 - 채널 ID: {}, 파일 개수: {}", channelId,
         binaryContentCreateRequests.size());
