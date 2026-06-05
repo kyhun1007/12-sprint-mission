@@ -1,7 +1,7 @@
 spring:
   config:
     activate:
-      on-profile: dev
+      on-profile: test
 
   datasource:
     url: jdbc:h2:mem:discodeit;MODE=PostgreSQL;DATABASE_TO_LOWER=TRUE;DEFAULT_NULL_ORDERING=HIGH
@@ -12,7 +12,10 @@ spring:
   jpa:
     hibernate:
       ddl-auto: create-drop
-
+      properties:
+        hibernate:
+          use_sql_comments: true
+  
   h2:
     console:
       enabled: true
@@ -20,10 +23,10 @@ spring:
 
 logging:
   level:
-    com.codeit.discodeit: debug
+    com.sprint.mission.discodeit: debug
     org.springframework.web: trace
     org.springframework.web.filter.CommonsRequestLoggingFilter: DEBUG
 
     # SQL 로그 보기 위해 설정했던 레벨 유지 (dev 환경)
-    org.hibernate.SQL: off
-    org.hibernate.orm.jdbc.bind: info
+    org.hibernate.SQL: debug
+    org.hibernate.orm.jdbc.bind: trace

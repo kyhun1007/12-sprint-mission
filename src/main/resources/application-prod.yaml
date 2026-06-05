@@ -19,7 +19,7 @@ spring:
 
 logging:
   level:
-    com.codeit.discodeit: info
+    com.sprint.mission.discodeit: info
     org.springframework.web: info
 
     org.hibernate.SQL: off

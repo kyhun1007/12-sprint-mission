@@ -20,7 +20,7 @@ spring:
 
 logging:
   level:
-    com.codeit.discodeit: debug
+    com.sprint.mission.discodeit: debug
     org.springframework.web: trace
     org.springframework.web.filter.CommonsRequestLoggingFilter: DEBUG
 
