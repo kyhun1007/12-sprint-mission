@@ -4,7 +4,7 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 
 public record MessageUpdateRequest(
-    @NotBlank(message = "메시지 내용은 비어있을 수 없습니다.")
+    @NotBlank(message = "변경할 메시지 내용은 비어있을 수 없습니다.")
     @Size(max = 2000, message = "메시지는 최대 {max}자까지 입력할 수 있습니다.")
     String newContent
 ) {

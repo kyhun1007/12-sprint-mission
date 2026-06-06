@@ -3,12 +3,14 @@ package com.sprint.mission.discodeit.controller;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sprint.mission.discodeit.dto.data.BinaryContentDto;
 import com.sprint.mission.discodeit.dto.data.UserDto;
+import com.sprint.mission.discodeit.dto.data.UserStatusDto;
 import com.sprint.mission.discodeit.dto.request.UserCreateRequest;
+import com.sprint.mission.discodeit.dto.request.UserStatusUpdateRequest;
 import com.sprint.mission.discodeit.dto.request.UserUpdateRequest;
-import com.sprint.mission.discodeit.entity.User;
+import com.sprint.mission.discodeit.exception.user.UserNotFoundException;
 import com.sprint.mission.discodeit.service.UserService;
 import com.sprint.mission.discodeit.service.UserStatusService;
-import java.util.Arrays;
+import java.time.Instant;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -20,17 +22,16 @@ import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.web.multipart.MultipartFile;
 
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.willDoNothing;
 import static org.mockito.BDDMockito.willThrow;
-import static org.mockito.Mockito.mock;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.multipart;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -152,7 +153,7 @@ public class UserControllerTest {
   void updateUser_success() throws Exception {
     UUID userId = UUID.randomUUID();
 
-    UserUpdateRequest request = new UserUpdateRequest("updatedUser", "password123", null);
+    UserUpdateRequest request = new UserUpdateRequest("updatedUser", "newEmail@codeit.com", null);
 
     MockMultipartFile requestPart = new MockMultipartFile(
         "userUpdateRequest",
@@ -198,6 +199,118 @@ public class UserControllerTest {
         .andExpect(jsonPath("$.id").value(userId.toString()))
         .andExpect(jsonPath("$.username").value("updatedUser"))
         .andExpect(jsonPath("$.profile.fileName").value("updated-profile.jpg"));
+  }
+
+  @Test
+  @DisplayName("사용자 업데이트 실패 - 유효하지 않은 요청 데이터 (글자수 초과 및 이메일 형식 오류)")
+  void updateUser_invalidRequest_fail() throws Exception {
+    UUID userId = UUID.randomUUID();
+
+    String invalidUsername = "a".repeat(51);
+    String invalidEmail = "not-an-email-format";
+
+    UserUpdateRequest invalidRequest = new UserUpdateRequest(invalidUsername, invalidEmail, null);
+
+    MockMultipartFile requestPart = new MockMultipartFile(
+        "userUpdateRequest",
+        "",
+        MediaType.APPLICATION_JSON_VALUE,
+        objectMapper.writeValueAsBytes(invalidRequest)
+    );
+
+    mockMvc.perform(multipart("/api/users/{id}", userId)
+            .file(requestPart)
+            .with(requestProcessor -> {
+              requestProcessor.setMethod("PATCH");
+              return requestProcessor;
+            })
+            .contentType(MediaType.MULTIPART_FORM_DATA_VALUE))
+        .andExpect(status().isBadRequest());
+  }
+
+  @Test
+  @DisplayName("사용자 업데이트 실패 - 비밀번호 길이 부족")
+  void updateUser_invalidPassword_fail() throws Exception {
+    UUID userId = UUID.randomUUID();
+
+    UserUpdateRequest invalidRequest = new UserUpdateRequest(null, null, "short");
+
+    MockMultipartFile requestPart = new MockMultipartFile(
+        "userUpdateRequest",
+        "",
+        MediaType.APPLICATION_JSON_VALUE,
+        objectMapper.writeValueAsBytes(invalidRequest)
+    );
+
+    mockMvc.perform(multipart("/api/users/{id}", userId)
+            .file(requestPart)
+            .with(requestProcessor -> {
+              requestProcessor.setMethod("PATCH");
+              return requestProcessor;
+            })
+            .contentType(MediaType.MULTIPART_FORM_DATA_VALUE))
+        .andExpect(status().isBadRequest());
+  }
+
+  @Test
+  @DisplayName("사용자 삭제 성공")
+  void deleteUser_success() throws Exception {
+    UUID userId = UUID.randomUUID();
+    willDoNothing().given(userService).delete(userId);
+
+    mockMvc.perform(delete("/api/users/{userId}", userId)
+            .contentType(MediaType.APPLICATION_JSON))
+        .andExpect(status().isNoContent());
+  }
+
+  @Test
+  @DisplayName("사용자 삭제 실패 - 존재하지 않는 사용자")
+  void deleteUserWithNonExistId_fail() throws Exception {
+    UUID userId = UUID.randomUUID();
+    willThrow(UserNotFoundException.withId(userId)).given(userService).delete(userId);
+
+    mockMvc.perform(delete("/api/users/{userId}", userId)
+            .contentType(MediaType.APPLICATION_JSON))
+        .andExpect(status().isNotFound());
+  }
+
+  @Test
+  @DisplayName("사용자 상태 업데이트 성공 테스트")
+  void updateUserStatus_success() throws Exception {
+    UUID userId = UUID.randomUUID();
+    UUID userStatusId = UUID.randomUUID();
+    Instant lastActiveAt = Instant.now();
+
+    UserStatusUpdateRequest updateRequest = new UserStatusUpdateRequest(lastActiveAt);
+    UserStatusDto updatedStatus = new UserStatusDto(userStatusId, userId, lastActiveAt);
+
+    given(userStatusService.updateByUserId(eq(userId), any(UserStatusUpdateRequest.class)))
+        .willReturn(updatedStatus);
+
+    mockMvc.perform(patch("/api/users/{userId}/userStatus", userId)
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(objectMapper.writeValueAsBytes(updateRequest)))
+        .andExpect(status().isOk())
+        .andExpect(jsonPath("$.userId").value(userId.toString()))
+        .andExpect(jsonPath("$.id").value(userStatusId.toString()))
+        .andExpect(content().json(objectMapper.writeValueAsString(updatedStatus)));
+  }
+
+  @Test
+  @DisplayName("사용자 상태 업데이트 실패 - 존재하지 않는 사용자")
+  void updateUserStatus_fail() throws Exception {
+    UUID userId = UUID.randomUUID();
+    Instant lastActiveAt = Instant.now();
+
+    UserStatusUpdateRequest updateRequest = new UserStatusUpdateRequest(lastActiveAt);
+
+    given(userStatusService.updateByUserId(eq(userId), any(UserStatusUpdateRequest.class)))
+        .willThrow(UserNotFoundException.withId(userId));
+
+    mockMvc.perform(patch("/api/users/{userId}/userStatus", userId)
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(objectMapper.writeValueAsBytes(updateRequest)))
+        .andExpect(status().isNotFound());
   }
 
 
