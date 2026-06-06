@@ -11,8 +11,12 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.sprint.mission.discodeit.dto.data.UserDto;
 import com.sprint.mission.discodeit.dto.request.UserCreateRequest;
+import com.sprint.mission.discodeit.dto.request.UserUpdateRequest;
 import com.sprint.mission.discodeit.service.UserService;
+import java.util.Optional;
+import java.util.UUID;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,7 +44,7 @@ public class UserIntegrationTest {
   private UserService userService;
 
   @Test
-  @DisplayName("유저생성 통합 테스트 성공")
+  @DisplayName("유저 생성 통합 테스트 성공")
   void createUser_success() throws Exception {
     UserCreateRequest request = new UserCreateRequest(
         "testUser",
@@ -102,6 +106,54 @@ public class UserIntegrationTest {
             .file(profile)
             .contentType(MediaType.MULTIPART_FORM_DATA_VALUE))
         .andExpect(status().isBadRequest());
+  }
+
+  @Test
+  @DisplayName("유저 업데이트 통합 테스트 성공")
+  void updateUser_success() throws Exception {
+    UserCreateRequest createRequest = new UserCreateRequest(
+        "testUser",
+        "test@codeit.com",
+        "password"
+    );
+
+    UserDto createdUser = userService.create(createRequest, Optional.empty());
+    UUID userId = createdUser.id();
+
+    UserUpdateRequest request = new UserUpdateRequest(
+        "newUsername",
+        "newTest@codeit.com",
+        "newPassword"
+    );
+
+    MockMultipartFile userUpdateRequest = new MockMultipartFile(
+        "userUpdateRequest",
+        "",
+        MediaType.APPLICATION_JSON_VALUE,
+        objectMapper.writeValueAsBytes(request)
+    );
+
+    MockMultipartFile newProfile = new MockMultipartFile(
+        "profile",
+        "new-profile.jpg",
+        MediaType.IMAGE_JPEG_VALUE,
+        "newProfile".getBytes()
+    );
+
+    mockMvc.perform(multipart("/api/users/{userId}", userId)
+            .file(userUpdateRequest)
+            .file(newProfile)
+            .contentType(MediaType.MULTIPART_FORM_DATA_VALUE)
+            .with(updateRequest -> {
+              updateRequest.setMethod("PATCH");
+              return updateRequest;
+            }))
+        .andExpect(status().isOk())
+        .andExpect(jsonPath("$.id", is(userId.toString())))
+        .andExpect(jsonPath("$.username", is("newUsername")))
+        .andExpect(jsonPath("$.email", is("newTest@codeit.com")))
+        .andExpect(jsonPath("$.profile.fileName", is("new-profile.jpg")));
+
   }
 
 
