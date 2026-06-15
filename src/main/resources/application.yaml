@@ -12,7 +12,7 @@ spring:
       ddl-auto: validate
     open-in-view: false
   profiles:
-    active: { SPRING_PROFILES_ACTIVE:dev }
+    active: ${SPRING_PROFILES_ACTIVE:dev}
 
 management:
   endpoints:
@@ -47,7 +47,7 @@ discodeit:
   storage:
     type: local
     local:
-      root-path: .discodeit/storage
+      root-path: ${STORAGE_ROOT_PATH}
 
 logging:
   level:

@@ -1,0 +1,42 @@
+services:
+  postgres-db:
+    image: postgres:17.6
+    container_name: discodeit-postgres
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB_NAME}
+      POSTGRES_USER: ${SPRING_DATASOURCE_USERNAME}
+      POSTGRES_PASSWORD: ${SPRING_DATASOURCE_PASSWORD}
+    ports:
+      - "${POSTGRES_EXTERNAL_PORT}:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./init-db/schema.sql:/docker-entrypoint-initdb.d/schema.sql
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U ${SPRING_DATASOURCE_USERNAME} -d ${POSTGRES_DB_NAME}" ]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  app-server:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: discodeit-app-server
+    environment:
+      SERVER_PORT: 80
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres-db:5432/${POSTGRES_DB_NAME}
+      SPRING_DATASOURCE_USERNAME: ${SPRING_DATASOURCE_USERNAME}
+      SPRING_DATASOURCE_PASSWORD: ${SPRING_DATASOURCE_PASSWORD}
+      SPRING_PROFILES_ACTIVE: prod
+      STORAGE_ROOT_PATH: ${STORAGE_ROOT_PATH}
+    ports:
+      - "8081:80"
+    volumes:
+      - storage-discodeit:/app/${STORAGE_ROOT_PATH}
+    depends_on:
+      postgres-db:
+        condition: service_healthy
+
+volumes:
+  postgres_data:
+  storage-discodeit:
