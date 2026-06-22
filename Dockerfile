@@ -14,9 +14,8 @@ RUN ./gradlew bootJar --no-daemon
 FROM amazoncorretto:17-alpine
 WORKDIR /app
 
-COPY --from=builder /app/build/libs/*-SNAPSHOT.jar /app/app.jar
+COPY --from=builder /app/build/libs/*.jar /app/app.jar
 
 EXPOSE 80
 
 ENTRYPOINT ["sh", "-c", "java $JVM_OPTS -jar /app/app.jar"]
-#test
