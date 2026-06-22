@@ -19,3 +19,4 @@ COPY --from=builder /app/build/libs/*-SNAPSHOT.jar /app/app.jar
 EXPOSE 80
 
 ENTRYPOINT ["sh", "-c", "java $JVM_OPTS -jar /app/app.jar"]
+#test
