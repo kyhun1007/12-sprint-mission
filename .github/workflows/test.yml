@@ -22,6 +22,11 @@ jobs:
 
       - name: 테스트 실행
         run: ./gradlew test
+        env:
+          AWS_S3_ACCESS_KEY: ${{ secrets.AWS_S3_ACCESS_KEY }}
+          AWS_S3_SECRET_KEY: ${{ secrets.AWS_S3_SECRET_KEY }}
+          AWS_S3_REGION: ${{ secrets.AWS_S3_REGION }}
+          AWS_S3_BUCKET: ${{ secrets.AWS_S3_BUCKET }}
 
       - name: Codecov 테스트 커버리지 업로드
         uses: codecov/codecov-action@v3
