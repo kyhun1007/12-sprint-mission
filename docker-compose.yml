@@ -28,11 +28,11 @@ services:
       SPRING_DATASOURCE_USERNAME: ${SPRING_DATASOURCE_USERNAME}
       SPRING_DATASOURCE_PASSWORD: ${SPRING_DATASOURCE_PASSWORD}
       SPRING_PROFILES_ACTIVE: prod
-      STORAGE_ROOT_PATH: ${STORAGE_ROOT_PATH}
+      STORAGE_LOCAL_ROOT_PATH: ${STORAGE_LOCAL_ROOT_PATH}
     ports:
       - "8081:80"
     volumes:
-      - storage-discodeit:/app/${STORAGE_ROOT_PATH}
+      - storage-discodeit:/app/${STORAGE_LOCAL_ROOT_PATH}
     depends_on:
       postgres-db:
         condition: service_healthy

@@ -1,5 +1,6 @@
 package com.sprint.mission.discodeit.integration;
 
+import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.hasItems;
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
@@ -188,11 +189,9 @@ class BinaryContentApiIntegrationTest {
 
     // When & Then
     mockMvc.perform(get("/api/binaryContents/{binaryContentId}/download", binaryContentId))
-        .andExpect(status().isOk())
-        .andExpect(header().string("Content-Disposition",
-            "attachment; filename=\"download-test.txt\""))
-        .andExpect(content().contentType(MediaType.TEXT_PLAIN_VALUE))
-        .andExpect(content().bytes(fileContent.getBytes()));
+        .andExpect(status().is3xxRedirection())
+        .andExpect(header().string("Location", containsString("amazonaws.com")))
+        .andExpect(header().string("Location", containsString("response-content-type=")));
   }
 
   @Test

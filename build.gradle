@@ -42,6 +42,9 @@ dependencies {
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 
     implementation 'software.amazon.awssdk:s3:2.31.7'
+
+    // Source: https://mvnrepository.com/artifact/org.jacoco/jacoco-maven-plugin
+    implementation("org.jacoco:jacoco-maven-plugin:0.7.9")
 }
 
 tasks.named('test') {
